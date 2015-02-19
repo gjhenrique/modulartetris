@@ -1,4 +1,4 @@
 LDFLAGS=-g -lncurses 
 
 all: main.c	
-	gcc main.c $(LDFLAGS) -o main
+	gcc block_list.c matrix_file.c boilerplate.c main.c $(LDFLAGS) -o main

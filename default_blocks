@@ -1,0 +1,35 @@
+# http://en.wikipedia.org/wiki/Tetromino#One-sided_tetrominoes
+
+# STRAIGHT 
+1 4
+1 1 1 1 
+
+# SQUARE
+2 2
+1 1
+1 1
+
+# T
+2 3
+1 1 1
+0 1 0
+
+# S
+2 3
+1 1 0
+0 1 1
+
+# Z
+2 3
+0 1 1
+1 1 0
+
+# L
+2 3
+1 1 1
+0 0 1
+
+# J
+2 3
+1 1 1
+1 0 0
