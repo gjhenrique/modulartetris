@@ -14,12 +14,8 @@ struct Matrix *populate_matrix(FILE *file, int row_size, int col_size)
     char *line = NULL;
     size_t len = 0;
 
-    struct Matrix* matrix = malloc(sizeof(struct Matrix));
+    struct Matrix *matrix = create_matrix(row_size, col_size);         
 
-    matrix->row_size = row_size;
-    matrix->col_size = col_size;
-    matrix->values = malloc_matrix(row_size, col_size);
-     
     for (i = 0; i < matrix->row_size; ++i)
     {
         getline(&line, &len, file);
@@ -59,7 +55,6 @@ struct BlockList *read_lines(FILE *file)
 
     while ((read = getline(&line, &len, file)) != -1) {
 
-        // Only qualify 
         if(!(strlen(line) == 1 || line[0] == '#'))
         {
             struct Block *block = malloc(sizeof(struct Block));

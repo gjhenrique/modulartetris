@@ -11,6 +11,8 @@ void print_matrix(struct Matrix *matrix);
 
 bool **malloc_matrix(int row_size, int col_size);
 
+struct Matrix *create_matrix(int row_size, int col_size);
+
 void free_matrix(struct Matrix *matrix);
 
 void free_block(struct Block *block);

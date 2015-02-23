@@ -26,14 +26,35 @@ void print_matrix(struct Matrix *matrix)
     printf("\n\n");
 }
 
+struct Matrix *create_matrix(int row_size, int col_size) {
+
+    struct Matrix* matrix = malloc(sizeof(struct Matrix));
+
+    matrix->row_size = row_size;
+    matrix->col_size = col_size;
+    matrix->values = malloc_matrix(row_size, col_size);
+
+    return  matrix;
+}
+
 bool **malloc_matrix(int row_size, int col_size)
 {
-    int i;
+    int i, j;
 
     bool **matrix = malloc(row_size * (sizeof(bool*))); 
 
-    for (i = 0; i < col_size; i++) 
+    for (i = 0; i < row_size; i++) 
         matrix[i] = malloc(col_size * sizeof(bool));
+
+    for (j = 0; i < row_size; ++i)
+    {
+        for (j = 0; j < col_size; ++j)
+        {
+            matrix[i][j] = 0; 
+        }
+        
+    }
+    
 
     return matrix;
 }

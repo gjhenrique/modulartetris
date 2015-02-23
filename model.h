@@ -3,6 +3,9 @@
 
 #include <stdbool.h>
 
+#define rotate_block_clockwise(block) rotate_block(block, true);
+#define rotate_block_anticlockwise(block) rotate_block(block, false);
+
 struct Matrix
 {
     bool **values;   
@@ -33,8 +36,11 @@ struct Board
 
     struct BlockList *default_blocks;
 
-    // Matrix of a pointers of blocks
     enum Color **visited;
 };
+
+void next_move(struct Board *board);
+
+struct Block *rotate_block(struct Block *block, bool clockwise);
 
 #endif /* MODEL_H */

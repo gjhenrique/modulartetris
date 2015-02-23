@@ -36,13 +36,13 @@ struct Block *get(struct BlockList *block_list, int index)
 {
     int i;
 
-    if(index > block_list->elements_number)
+    if (index > block_list->elements_number)
     {
         fprintf(stderr, "%d is bigger than the current number of elements in the list: %d", index, block_list->elements_number);
         return NULL;
     }
     
-    if(block_list->HEAD == NULL)
+    if (block_list->HEAD == NULL)
     {
         fprintf(stderr, "HEAD is empty"); 
     }
@@ -56,5 +56,3 @@ struct Block *get(struct BlockList *block_list, int index)
     
     return block_node->block;
 }
-
-
