@@ -43,24 +43,6 @@ void print_board(struct Board *board)
     printf("\n\n");
 }
 
-/*
-struct Block *deep_copy_block(struct Block *block)
-{
-    struct Block *new_block = malloc(sizeof(struct Block));
-    struct Matrix *new_matrix = malloc(sizeof(struct Matrix));
-    bool **new_values = malloc(sizeof(bool *));
-
-    memcpy(new_block, block, sizeof(struct Block));
-    memcpy(new_matrix, block->matrix, sizeof(struct Matrix));
-    memcpy(new_values, block->matrix->values, sizeof(bool*));
-    
-    new_matrix->values = new_values;
-    new_block->matrix = new_matrix;
-     
-    return new_block;
-}
-*/
-
 struct Matrix *create_matrix(int row_size, int col_size) {
 
     struct Matrix* matrix = malloc(sizeof(struct Matrix));

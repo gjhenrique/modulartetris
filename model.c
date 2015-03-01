@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "model.h"
 #include "block_list.h"
@@ -61,7 +62,7 @@ struct Block *rotate_block(struct Block *block, bool clockwise)
     struct Matrix *transposed_matrix = transpose_matrix(block->matrix);
 
     struct Matrix *rotated_matrix = (clockwise) ? rotate_clockwise(transposed_matrix) : rotate_anticlockwise(transposed_matrix);
-        
+
     free_matrix(transposed_matrix);
 
     struct Block *new_block = malloc(sizeof(struct Block));
@@ -71,21 +72,29 @@ struct Block *rotate_block(struct Block *block, bool clockwise)
     return new_block;
 }
 
-
 struct Block *get_random_block(struct BlockList *block_list)
 {
-    int random_number = rand() % block_list->elements_number - 1;
-    return get(block_list, 1);
+    int random_number = rand() % block_list->elements_number;
+
+    struct Block *block = get(block_list, random_number);
+
+    struct Block *new_block = malloc(sizeof(struct Block));
+
+    // Be careful!!! We are doing a shallow copy the block of the list
+    // Don't call free_block in the block returned by this function
+    memcpy(new_block, block, sizeof(struct Block));
+
+    return new_block;
 }
 
 enum Color **malloc_collor_matrix(int width, int height)
 {
     int i, j;
     enum Color **colors = malloc(height * sizeof(enum Color *));
-    
+
     for ( i = 0; i < height; i++)
         colors[i] = malloc(width * sizeof(enum Color));
-    
+
     for (i = 0; i < height; ++i)
     {
         for (j = 0; j < width; j++)
@@ -99,7 +108,6 @@ enum Color **malloc_collor_matrix(int width, int height)
 
 void set_default_values(struct Board *board)
 {
-
     board->next_block = get_random_block(board->default_blocks);
     // TODO: Calculate the right initial position of x
     board->current_block_x = (board->width - 3) / 2;
@@ -112,9 +120,9 @@ struct Board *create_board(int width, int height)
     int i, j;
 
     srand(time(NULL));
-    
+
     struct Board *board = malloc(sizeof(struct Board));
-    
+
     board->width = width;
     board->height = height; 
 
@@ -128,50 +136,80 @@ struct Board *create_board(int width, int height)
     return board;
 }
 
-void set_next_block(struct Board * board)
+void prepare_next_block(struct Board * board)
 {
-    free_block(board->current_block);
+    free(board->current_block);
     board->current_block = board->next_block;
     set_default_values(board);
 }
 
+bool game_over(struct Board *board)
+{
+    int i, j;
+    
+    //for(i = 0; i < board->height; i++)
+
+    for (j = board->current_block_x; j < board->current_block_x + board->current_block->matrix->col_size; j++)
+    {
+        bool over = true;
+        //for (j = board->current_block_x; j < board->current_block_x + board->current_block->matrix->col_size; j++)
+
+        for(i = 0; i < board->height; i++)
+        {
+            if(board->visited[i][j] == NONE)
+            {
+                over = false;
+                break;
+            }
+        }
+
+        if(over) 
+            return true;
+    }
+
+    return false;
+}
 
 void next_move(struct Board *board)
 {
-     
     int i, j, k, m;
 
     int new_y = board->current_block_y + 1;
-
-    if(new_y >= board->height)
+    
+    // Checking if the game is over
+    if (game_over(board))
     {
-        set_next_block(board);
+        exit(-1);
+    }
+
+    if (new_y >= board->height)
+    {
+        prepare_next_block(board);
         return; 
     }
 
-    for (i = 0; i < board->current_block->matrix->col_size; i++)
+    for (i = board->current_block_x, j = 0; i < board->current_block->matrix->col_size + board->current_block_x; i++, j++)
     {
-        // Quer dizer que parou e não tem como ir mais pra baixo
-        if (new_y >= board->height && board->visited[new_y][i] != NONE)
+        if (board->visited[new_y][i] != NONE && board->current_block->matrix->values[board->current_block->matrix->row_size -1][j] == true)
         {
-            set_next_block(board); 
+            prepare_next_block(board); 
             return;
         }
     }
-    
+
     for (i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
     {
         for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
         {
             if (i < board->height && i >= 0)
             {
-                if(board->current_block->matrix->values[k][m])
+                if (board->current_block->matrix->values[k][m])
                 {
                     board->visited[i][j] = board->current_block->color;
                 }
                 else
                 {
-                    board->visited[i][j] = NONE;
+                    board->visited[i][j] = (new_y == i && board->visited[i][j] !=NONE) ? board->visited[i][j] : NONE;
                 }
             }
         }
@@ -184,9 +222,8 @@ void next_move(struct Board *board)
         if (previous_y < board->height && previous_y >= 0)
         {
             board->visited[previous_y][i] = NONE;
-        } 
+        }
     }
-    
+
     board->current_block_y = new_y;
 }
-

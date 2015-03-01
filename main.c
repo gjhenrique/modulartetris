@@ -13,13 +13,13 @@ int main()
 
     struct Board *board = create_board(10, 10); 
     
-    print_matrix(board->current_block->matrix);
-    for (i = 0; i < 5; ++i)
+    for (i = 0; i < 40; ++i)
     {
         next_move(board);
+        print_board(board);
     }
 
-    print_board(board);
+    //print_board(board);
     
     return 0;
 }
