@@ -15,7 +15,7 @@ struct Matrix
 
 enum Color 
 {
-    RED, BLUE, GREEN, ORANGE, PINK, BROWN, PURPLE
+    NONE, RED, BLUE, GREEN, ORANGE, PINK, BROWN, PURPLE
 };
 
 struct Block 
@@ -28,6 +28,9 @@ struct Board
 {
     int height;
     int width;
+
+    int current_block_x;
+    int current_block_y;
     
     // Pointer to Block
     struct Block *current_block;
@@ -39,7 +42,8 @@ struct Board
     enum Color **visited;
 };
 
-void next_move(struct Board *board);
+void next_move (struct Board *board);
+struct Board *create_board(int width, int height);
 
 struct Block *rotate_block(struct Block *block, bool clockwise);
 

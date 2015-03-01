@@ -62,6 +62,11 @@ struct BlockList *read_lines(FILE *file)
             struct Matrix* matrix = read_matrix(file, line);            
 
             block->matrix = matrix;
+
+            // Jumping color NONE
+            if(color_index == NONE)
+                color_index++;
+
             block->color = color_index++; 
 
             add(block_list, block);

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "boilerplate.h"
 #include "block_list.h"
@@ -26,12 +27,46 @@ void print_matrix(struct Matrix *matrix)
     printf("\n\n");
 }
 
+void print_board(struct Board *board)
+{
+    int i, j;
+
+    for (i = 0; i < board->height; i++)
+    {
+        for (j = 0; j < board->width; j++)
+        {
+            printf("%d", board->visited[i][j]);
+            printf ("\t");
+        }
+        printf("\n");
+    } 
+    printf("\n\n");
+}
+
+/*
+struct Block *deep_copy_block(struct Block *block)
+{
+    struct Block *new_block = malloc(sizeof(struct Block));
+    struct Matrix *new_matrix = malloc(sizeof(struct Matrix));
+    bool **new_values = malloc(sizeof(bool *));
+
+    memcpy(new_block, block, sizeof(struct Block));
+    memcpy(new_matrix, block->matrix, sizeof(struct Matrix));
+    memcpy(new_values, block->matrix->values, sizeof(bool*));
+    
+    new_matrix->values = new_values;
+    new_block->matrix = new_matrix;
+     
+    return new_block;
+}
+*/
+
 struct Matrix *create_matrix(int row_size, int col_size) {
 
     struct Matrix* matrix = malloc(sizeof(struct Matrix));
 
-    matrix->row_size = row_size;
     matrix->col_size = col_size;
+    matrix->row_size = row_size;
     matrix->values = malloc_matrix(row_size, col_size);
 
     return  matrix;
@@ -46,15 +81,13 @@ bool **malloc_matrix(int row_size, int col_size)
     for (i = 0; i < row_size; i++) 
         matrix[i] = malloc(col_size * sizeof(bool));
 
-    for (j = 0; i < row_size; ++i)
+    for (i = 0; i < row_size; i++)
     {
-        for (j = 0; j < col_size; ++j)
+        for (j = 0; j < col_size; j++)
         {
             matrix[i][j] = 0; 
         }
-        
     }
-    
 
     return matrix;
 }

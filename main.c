@@ -11,21 +11,16 @@ int main()
 {
     int i, j;
 
-    struct BlockList *block_list = read_from_file("default_blocks"); 
-        
-    for (i = 0; i < block_list->elements_number; ++i)
+    struct Board *board = create_board(10, 10); 
+    
+    print_matrix(board->current_block->matrix);
+    for (i = 0; i < 5; ++i)
     {
-        struct Block *block = get(block_list, i);
-        print_matrix(block->matrix);
-        struct Block *new_block = block;
-
-        for (j = 0; j < 1; j++) {
-            struct Block *tmp_block = rotate_block_anticlockwise(new_block);
-            new_block = tmp_block;
-            tmp_block = NULL;
-        }
-        print_matrix(new_block->matrix);
+        next_move(board);
     }
 
+    print_board(board);
+    
     return 0;
 }
+

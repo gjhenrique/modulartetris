@@ -1,7 +1,10 @@
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 
 #include "model.h"
+#include "block_list.h"
+#include "matrix_file.h"
 #include "boilerplate.h"
 
 struct Matrix *transpose_matrix(struct Matrix *matrix)
@@ -67,3 +70,123 @@ struct Block *rotate_block(struct Block *block, bool clockwise)
 
     return new_block;
 }
+
+
+struct Block *get_random_block(struct BlockList *block_list)
+{
+    int random_number = rand() % block_list->elements_number - 1;
+    return get(block_list, 1);
+}
+
+enum Color **malloc_collor_matrix(int width, int height)
+{
+    int i, j;
+    enum Color **colors = malloc(height * sizeof(enum Color *));
+    
+    for ( i = 0; i < height; i++)
+        colors[i] = malloc(width * sizeof(enum Color));
+    
+    for (i = 0; i < height; ++i)
+    {
+        for (j = 0; j < width; j++)
+        {
+            colors[i][j] = NONE;        
+        }
+    }
+
+    return colors;
+}
+
+void set_default_values(struct Board *board)
+{
+
+    board->next_block = get_random_block(board->default_blocks);
+    // TODO: Calculate the right initial position of x
+    board->current_block_x = (board->width - 3) / 2;
+    board->current_block_y = -1;
+
+}
+
+struct Board *create_board(int width, int height)
+{
+    int i, j;
+
+    srand(time(NULL));
+    
+    struct Board *board = malloc(sizeof(struct Board));
+    
+    board->width = width;
+    board->height = height; 
+
+    board->default_blocks = read_from_file("default_blocks");
+
+    board->current_block = get_random_block(board->default_blocks);
+    set_default_values(board);
+
+    board->visited = malloc_collor_matrix(width, height);
+
+    return board;
+}
+
+void set_next_block(struct Board * board)
+{
+    free_block(board->current_block);
+    board->current_block = board->next_block;
+    set_default_values(board);
+}
+
+
+void next_move(struct Board *board)
+{
+     
+    int i, j, k, m;
+
+    int new_y = board->current_block_y + 1;
+
+    if(new_y >= board->height)
+    {
+        set_next_block(board);
+        return; 
+    }
+
+    for (i = 0; i < board->current_block->matrix->col_size; i++)
+    {
+        // Quer dizer que parou e não tem como ir mais pra baixo
+        if (new_y >= board->height && board->visited[new_y][i] != NONE)
+        {
+            set_next_block(board); 
+            return;
+        }
+    }
+    
+    for (i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
+    {
+        for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
+        {
+            if (i < board->height && i >= 0)
+            {
+                if(board->current_block->matrix->values[k][m])
+                {
+                    board->visited[i][j] = board->current_block->color;
+                }
+                else
+                {
+                    board->visited[i][j] = NONE;
+                }
+            }
+        }
+    }
+
+    // Erasing previous block
+    int previous_y = new_y - board->current_block->matrix->row_size;
+    for (i = board->current_block_x; i < board->current_block->matrix->col_size + board->current_block_x; i++)
+    {
+        if (previous_y < board->height && previous_y >= 0)
+        {
+            board->visited[previous_y][i] = NONE;
+        } 
+    }
+    
+    board->current_block_y = new_y;
+}
+
