@@ -11,16 +11,14 @@ int main()
 {
     int i, j;
 
-    struct Board *board = create_board(10, 10); 
+    struct Board *board = create_board(10, 30); 
     
-    for (i = 0; i < 40; ++i)
+    for (i = 0; i < 300; ++i)
     {
         next_move(board);
         print_board(board);
     }
 
-    //print_board(board);
-    
     return 0;
 }
 

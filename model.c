@@ -146,30 +146,22 @@ void prepare_next_block(struct Board * board)
     set_default_values(board);
 }
 
-bool game_over(struct Board *board)
-{
-    int i, j;
-    
-    //for(i = 0; i < board->height; i++)
 
-    for (j = board->current_block_x; j < board->current_block_x + board->current_block->matrix->col_size; j++)
+
+void erase_current_block(struct Board *board)
+{
+    int i, j, k, m;
+    for (i = board->current_block_y, k = board->current_block->matrix->row_size - 1; i > board->current_block_y - board->current_block->matrix->row_size; i--, k--)
     {
-        bool over = true;
-        // Don't change this position. Otherwise the break won't work
-        for(i = 0; i < board->height; i++)
+        for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
         {
-            if(board->visited[i][j] == NONE)
+            if(i < board->height && i >= 0)
             {
-                over = false;
-                break;
+                if(board->current_block->matrix->values[k][m])
+                    board->visited[i][j] = NONE;
             }
         }
-
-        if(over) 
-            return true;
     }
-
-    return false;
 }
 
 void print_current_block(struct Board *board, int index)
@@ -189,7 +181,26 @@ void print_current_block(struct Board *board, int index)
             }
         }
     }
+}
 
+bool game_over(struct Board *board, int row)
+{
+    int i, j, k, m;
+    erase_current_block(board);
+
+    for (i = board->current_block_y, k = board->current_block->matrix->row_size - 1; i > board->current_block_y - board->current_block->matrix->row_size; i--, k--)
+    {
+        for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
+        {
+            if(i == -1 && board->visited[0][j] != NONE)
+            {
+                return true;
+            }
+        }
+    }
+
+    print_current_block(board, board->current_block_y);
+    return false;
 }
 
 void next_move(struct Board *board)
@@ -197,9 +208,9 @@ void next_move(struct Board *board)
     int i, j, k, m;
 
     int new_y = board->current_block_y + 1;
-    
+ 
     // Checking if the game is over
-    if (game_over(board))
+    if (game_over(board, 0))
     {
         exit(-1);
     }
@@ -211,17 +222,7 @@ void next_move(struct Board *board)
     }
     
     // Erasing current   
-    for (i = board->current_block_y, k = board->current_block->matrix->row_size - 1; i > board->current_block_y - board->current_block->matrix->row_size; i--, k--)
-    {
-        for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
-        {
-            if(i < board->height && i >= 0)
-            {
-                if(board->current_block->matrix->values[k][m])
-                    board->visited[i][j] = NONE;
-            }
-        }
-    }
+    erase_current_block(board); 
 
     for (i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
     {
@@ -240,6 +241,6 @@ void next_move(struct Board *board)
     }
     
     print_current_block(board, new_y);
-
+    print_board(board);
     board->current_block_y = new_y;
 }
