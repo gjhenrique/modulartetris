@@ -8,6 +8,9 @@
 #include "matrix_file.h"
 #include "boilerplate.h"
 
+//TODO:
+// Verificar se completou blocos
+
 struct Matrix *transpose_matrix(struct Matrix *matrix)
 {
     int i, j;
@@ -77,7 +80,7 @@ struct Block *get_random_block(struct BlockList *block_list)
     int random_number = rand() % block_list->elements_number;
 
     struct Block *block = get(block_list, random_number);
-
+    
     struct Block *new_block = malloc(sizeof(struct Block));
 
     // Be careful!!! We are doing a shallow copy the block of the list
@@ -152,8 +155,7 @@ bool game_over(struct Board *board)
     for (j = board->current_block_x; j < board->current_block_x + board->current_block->matrix->col_size; j++)
     {
         bool over = true;
-        //for (j = board->current_block_x; j < board->current_block_x + board->current_block->matrix->col_size; j++)
-
+        // Don't change this position. Otherwise the break won't work
         for(i = 0; i < board->height; i++)
         {
             if(board->visited[i][j] == NONE)
@@ -168,6 +170,26 @@ bool game_over(struct Board *board)
     }
 
     return false;
+}
+
+void print_current_block(struct Board *board, int index)
+{
+    int i , k, j, m;
+
+    for (i = index, k = board->current_block->matrix->row_size - 1; i > index - board->current_block->matrix->row_size; i--, k--)
+    {
+        for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
+        {
+            if (i < board->height && i >= 0)
+            {
+                if(board->current_block->matrix->values[k][m])
+                {
+                    board->visited[i][j] = board->current_block->color;
+                }
+            }
+        }
+    }
+
 }
 
 void next_move(struct Board *board)
@@ -187,43 +209,37 @@ void next_move(struct Board *board)
         prepare_next_block(board);
         return; 
     }
-
-    for (i = board->current_block_x, j = 0; i < board->current_block->matrix->col_size + board->current_block_x; i++, j++)
+    
+    // Erasing current   
+    for (i = board->current_block_y, k = board->current_block->matrix->row_size - 1; i > board->current_block_y - board->current_block->matrix->row_size; i--, k--)
     {
-        if (board->visited[new_y][i] != NONE && board->current_block->matrix->values[board->current_block->matrix->row_size -1][j] == true)
+        for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
         {
-            prepare_next_block(board); 
-            return;
+            if(i < board->height && i >= 0)
+            {
+                if(board->current_block->matrix->values[k][m])
+                    board->visited[i][j] = NONE;
+            }
         }
     }
 
     for (i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
     {
-        for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
+        for (j = board->current_block_x, m = 0; j < board->current_block->matrix->col_size + board->current_block_x; j++, m++)
         {
             if (i < board->height && i >= 0)
             {
-                if (board->current_block->matrix->values[k][m])
+                if (board->visited[i][j] != NONE && board->current_block->matrix->values[k][m] == true)
                 {
-                    board->visited[i][j] = board->current_block->color;
+                    print_current_block(board, board->current_block_y);
+                    prepare_next_block(board);
+                    return;
                 }
-                else
-                {
-                    board->visited[i][j] = (new_y == i && board->visited[i][j] !=NONE) ? board->visited[i][j] : NONE;
-                }
-            }
+            } 
         }
     }
-
-    // Erasing previous block
-    int previous_y = new_y - board->current_block->matrix->row_size;
-    for (i = board->current_block_x; i < board->current_block->matrix->col_size + board->current_block_x; i++)
-    {
-        if (previous_y < board->height && previous_y >= 0)
-        {
-            board->visited[previous_y][i] = NONE;
-        }
-    }
+    
+    print_current_block(board, new_y);
 
     board->current_block_y = new_y;
 }
