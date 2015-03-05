@@ -27,6 +27,21 @@ struct Matrix *transpose_matrix(struct Matrix *matrix)
     return transposed_matrix;
 }
 
+struct Matrix *clone_matrix(struct Matrix *matrix)
+{
+    int i, j;
+    struct Matrix *new_matrix = create_matrix(matrix->row_size, matrix->col_size);
+
+    for (i = 0 ; i < matrix->row_size; i++)
+    {
+        for (j = 0; j < matrix->col_size; j++)
+        {
+            new_matrix->values[i][j] = matrix->values[i][j];
+        }
+    }
+    return new_matrix;
+}
+
 struct Matrix *rotate_clockwise(struct Matrix *matrix)
 {
     int i, j, k;
@@ -77,17 +92,17 @@ struct Block *rotate_block(struct Block *block, bool clockwise)
 
 struct Block *get_random_block(struct BlockList *block_list)
 {
-    int random_number = rand() % block_list->elements_number;
+    int i;
 
-    struct Block *block = get(block_list, random_number);
+    int random_block = rand() % block_list->elements_number;
+
+    struct Block *block = get(block_list, 6);
     
     struct Block *new_block = malloc(sizeof(struct Block));
+    new_block->color = block->color;
+    new_block->matrix = clone_matrix(block->matrix); 
 
-    // Be careful!!! We are doing a shallow copy the block of the list
-    // Don't call free_block in the block returned by this function
-    memcpy(new_block, block, sizeof(struct Block));
-
-    return new_block;
+   return new_block;
 }
 
 enum Color **malloc_collor_matrix(int width, int height)
@@ -141,12 +156,10 @@ struct Board *create_board(int width, int height)
 
 void prepare_next_block(struct Board * board)
 {
-    free(board->current_block);
+    free_block(board->current_block);
     board->current_block = board->next_block;
     set_default_values(board);
 }
-
-
 
 void erase_current_block(struct Board *board)
 {
@@ -241,6 +254,6 @@ void next_move(struct Board *board)
     }
     
     print_current_block(board, new_y);
-    print_board(board);
+
     board->current_block_y = new_y;
 }
