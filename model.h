@@ -6,6 +6,8 @@
 #define rotate_block_clockwise(block) rotate_block(block, true);
 #define rotate_block_anticlockwise(block) rotate_block(block, false);
 
+#define move_to_bottom(board) while(next_move(board)) {}
+
 struct Matrix
 {
     bool **values;   
@@ -42,7 +44,7 @@ struct Board
     enum Color **visited;
 };
 
-void next_move (struct Board *board);
+bool next_move (struct Board *board);
 struct Board *create_board(int width, int height);
 
 struct Block *rotate_block(struct Block *block, bool clockwise);

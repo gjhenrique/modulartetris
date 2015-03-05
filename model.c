@@ -8,8 +8,10 @@
 #include "matrix_file.h"
 #include "boilerplate.h"
 
+
 //TODO:
 // Verificar se completou blocos
+// Rotation of block in board
 
 struct Matrix *transpose_matrix(struct Matrix *matrix)
 {
@@ -96,7 +98,7 @@ struct Block *get_random_block(struct BlockList *block_list)
 
     int random_block = rand() % block_list->elements_number;
 
-    struct Block *block = get(block_list, 6);
+    struct Block *block = get(block_list, random_block);
     
     struct Block *new_block = malloc(sizeof(struct Block));
     new_block->color = block->color;
@@ -216,7 +218,29 @@ bool game_over(struct Board *board, int row)
     return false;
 }
 
-void next_move(struct Board *board)
+void move_to_left(struct Board *board)
+{
+    int new_x = board->current_block_x - 1;
+    
+    erase_current_block(board);
+    
+    board->current_block_x = (new_x < 0) ? 0 : new_x;
+
+    print_current_block(board, board->current_block_y);
+}
+
+void move_to_right(struct Board *board)
+{
+    int new_x = board->current_block_x + 1;
+
+    erase_current_block(board);
+
+    board->current_block_x = (new_x + board->current_block->matrix->col_size > board->width) ? board->width - board->current_block->matrix->col_size : new_x;
+
+    print_current_block(board, board->current_block_y);
+}
+
+bool next_move(struct Board *board)
 {
     int i, j, k, m;
 
@@ -231,7 +255,7 @@ void next_move(struct Board *board)
     if (new_y >= board->height)
     {
         prepare_next_block(board);
-        return; 
+        return false; 
     }
     
     // Erasing current   
@@ -247,7 +271,7 @@ void next_move(struct Board *board)
                 {
                     print_current_block(board, board->current_block_y);
                     prepare_next_block(board);
-                    return;
+                    return false;
                 }
             } 
         }
@@ -256,4 +280,7 @@ void next_move(struct Board *board)
     print_current_block(board, new_y);
 
     board->current_block_y = new_y;
+
+    return true;
 }
+
