@@ -18,12 +18,12 @@ int main()
         next_move(board);
         for (j = 0; j < 10; j++)
         {
-            //if(i % 2 == 0)
-                //move_to_right(board);
-            //else
-               // move_to_left(board); 
+            if(i % 2 == 0)
+                move_to_right(board);
+            else
+               move_to_left(board); 
         }
-
+        
         move_to_bottom(board);
         print_board(board);
     }

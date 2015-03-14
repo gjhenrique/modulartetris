@@ -198,25 +198,7 @@ void print_current_block(struct Board *board, int index)
     }
 }
 
-bool game_over(struct Board *board, int row)
-{
-    int i, j, k, m;
-    erase_current_block(board);
 
-    for (i = board->current_block_y, k = board->current_block->matrix->row_size - 1; i > board->current_block_y - board->current_block->matrix->row_size; i--, k--)
-    {
-        for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
-        {
-            if(i == -1 && board->visited[0][j] != NONE)
-            {
-                return true;
-            }
-        }
-    }
-
-    print_current_block(board, board->current_block_y);
-    return false;
-}
 
 void move_to_left(struct Board *board)
 {
@@ -240,27 +222,25 @@ void move_to_right(struct Board *board)
     print_current_block(board, board->current_block_y);
 }
 
-bool next_move(struct Board *board)
+// Considering that the block is not painted yet
+bool game_over(struct Board *board, bool fits)
+{
+    int i;
+    int new_y = board->height - 1; 
+
+    for (i = new_y; i < new_y - board->current_block->matrix->row_size; i++)
+    {
+        if(i == -1 && !fits)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool block_fits(struct Board *board, int new_y)
 {
     int i, j, k, m;
-
-    int new_y = board->current_block_y + 1;
- 
-    // Checking if the game is over
-    if (game_over(board, 0))
-    {
-        exit(-1);
-    }
-
-    if (new_y >= board->height)
-    {
-        prepare_next_block(board);
-        return false; 
-    }
-    
-    // Erasing current   
-    erase_current_block(board); 
-
     for (i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
     {
         for (j = board->current_block_x, m = 0; j < board->current_block->matrix->col_size + board->current_block_x; j++, m++)
@@ -269,13 +249,44 @@ bool next_move(struct Board *board)
             {
                 if (board->visited[i][j] != NONE && board->current_block->matrix->values[k][m] == true)
                 {
-                    print_current_block(board, board->current_block_y);
-                    prepare_next_block(board);
                     return false;
                 }
             } 
         }
     }
+    return true;
+}
+
+bool next_move(struct Board *board)
+{
+
+    int new_y = board->current_block_y + 1;
+    
+    
+    if (new_y >= board->height)
+    {
+        prepare_next_block(board);
+        return false; 
+    }
+    
+    // Erasing current   
+    erase_current_block(board); 
+    
+    bool fits = block_fits(board, new_y); 
+    printf("%d\n", fits);
+
+    if (game_over(board, fits))
+    {
+        exit(-1);
+    }
+
+    if(!fits)
+    {
+        print_current_block(board, board->current_block_y);
+        prepare_next_block(board);
+        return false;
+    }
+    
     
     print_current_block(board, new_y);
 
