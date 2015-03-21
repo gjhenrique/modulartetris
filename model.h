@@ -3,9 +3,6 @@
 
 #include <stdbool.h>
 
-#define rotate_block_clockwise(block) rotate_block(block, true);
-#define rotate_block_anticlockwise(block) rotate_block(block, false);
-
 #define move_to_bottom(board) while(next_move(board)) {}
 
 struct Matrix

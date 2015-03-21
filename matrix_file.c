@@ -39,9 +39,8 @@ struct Matrix *read_matrix(FILE *file, char *line)
     }
 
     row_size = to_digit(line[0]);
-    col_size = to_digit(line[2]);
 
-    return populate_matrix(file, row_size, col_size);
+    return populate_matrix(file, row_size, row_size);
 }
 
 struct BlockList *read_lines(FILE *file)
