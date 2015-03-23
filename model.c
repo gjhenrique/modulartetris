@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "model.h"
 #include "block_list.h"
@@ -99,6 +100,7 @@ struct Block *get_random_block(struct BlockList *block_list)
 
     int random_block = rand() % block_list->elements_number;
 
+    //struct Block *block = get(block_list, 6);
     struct Block *block = get(block_list, random_block);
     
     struct Block *new_block = malloc(sizeof(struct Block));
@@ -153,6 +155,7 @@ struct Board *create_board(int width, int height)
     set_default_values(board);
 
     board->visited = malloc_collor_matrix(width, height);
+    board->is_game_over = false;
 
     return board;
 }
@@ -224,17 +227,15 @@ void move_to_right(struct Board *board)
     print_current_block(board, board->current_block_y);
 }
 
-void rotate(struct Board *board)
-{
-}
 
 // Considering that the block is not painted yet
 bool game_over(struct Board *board, bool fits)
 {
     int i;
-    int new_y = board->height - 1; 
+    //int new_y = board->height - 1; 
+    int new_y = board->current_block_y; 
 
-    for (i = new_y; i < new_y - board->current_block->matrix->row_size; i++)
+    for (i = new_y; i > new_y - board->current_block->matrix->row_size; i--)
     {
         if(i == -1 && !fits)
         {
@@ -287,11 +288,12 @@ bool next_move(struct Board *board)
     erase_current_block(board); 
     
     bool fits = block_fits(board, new_y); 
-    printf("%d\n", fits);
 
     if (game_over(board, fits))
     {
-        exit(-1);
+        print_current_block(board, board->current_block_y);
+        board->is_game_over = true;
+        return false;
     }
 
     if(!fits)

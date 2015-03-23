@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#define move_to_bottom(board) while(next_move(board)) {}
+#define move_to_bottom(board) while(next_move(board)) { print_board(board); }
 
 struct Matrix
 {
@@ -39,6 +39,8 @@ struct Board
     struct BlockList *default_blocks;
 
     enum Color **visited;
+
+    bool is_game_over;
 };
 
 bool next_move (struct Board *board);
