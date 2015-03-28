@@ -11,9 +11,9 @@ int main()
 {
     int i, j;
 
-    struct Board *board = create_board(10, 10);
+    struct Board *board = create_board(4, 10);
     
-    for (i = 0; i < 1000; ++i)
+    for (i = 0; i < 26; ++i)
     {
         for (j = 0; j < 10; j++)
         {
@@ -23,12 +23,12 @@ int main()
                move_to_left(board);
         }
         
-        move_to_bottom(board);
+        //move_to_bottom(board);
+        next_move(board);
 
         if(board->is_game_over)
         {
             print_matrix(board->current_block->matrix);
-                printf("%s", (i % 2 == 0) ? "RIGHT" : "LEFT");
             return 0;
         }
         

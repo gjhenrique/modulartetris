@@ -100,8 +100,8 @@ struct Block *get_random_block(struct BlockList *block_list)
 
     int random_block = rand() % block_list->elements_number;
 
-    //struct Block *block = get(block_list, 6);
-    struct Block *block = get(block_list, random_block);
+    struct Block *block = get(block_list, 6);
+    //struct Block *block = get(block_list, random_block);
     
     struct Block *new_block = malloc(sizeof(struct Block));
     new_block->color = block->color;
@@ -160,8 +160,56 @@ struct Board *create_board(int width, int height)
     return board;
 }
 
+
+void replace_lines(struct Board *board, int row)
+{
+    int i, j, k, tmp;
+
+    for(i = 0; i < board->width; i++)
+    {
+        for(j = row - 1; j >=0; j--)
+        {
+            if(board->visited[j+1][i] != NONE)
+            {
+                tmp = board->visited[j][i];
+                board->visited[j][i] = 0;
+                board->visited[j+1][i] = tmp;               
+            }
+        }
+    }
+}
+
+bool check_line(struct Board *board, int line)
+{
+    int i, j;
+    for (i = 0; i < board->width; i++)
+    {
+        if(board->visited[line][i] == NONE)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void check_lines(struct Board *board)
+{
+    int i;
+
+    for (i = 0; i < board->height; i++)
+    {
+        if(check_line(board, i))
+        {
+            replace_lines(board, i);
+        }
+    }
+}
+
+
 void prepare_next_block(struct Board * board)
 {
+    check_lines(board);
     free_block(board->current_block);
     board->current_block = board->next_block;
     set_default_values(board);
@@ -228,16 +276,14 @@ void move_to_right(struct Board *board)
 }
 
 
-// Considering that the block is not painted yet
 bool game_over(struct Board *board, bool fits)
 {
     int i;
-    //int new_y = board->height - 1; 
     int new_y = board->current_block_y; 
 
     for (i = new_y; i > new_y - board->current_block->matrix->row_size; i--)
     {
-        if(i == -1 && !fits)
+        if (i == -1 && !fits)
         {
             return true;
         }
@@ -302,7 +348,6 @@ bool next_move(struct Board *board)
         prepare_next_block(board);
         return false;
     }
-    
     
     print_current_block(board, new_y);
 
