@@ -9,7 +9,6 @@
 #include "matrix_file.h"
 #include "boilerplate.h"
 
-
 //TODO:
 // Verificar se completou blocos
 // Rotation of block in board
@@ -46,7 +45,7 @@ struct Matrix *clone_matrix(struct Matrix *matrix)
     return new_matrix;
 }
 
-struct Matrix *rotate_block_clockwise(struct Matrix *matrix)
+struct Matrix *rotate_matrix_clockwise(struct Matrix *matrix)
 {
     int i, j, k;
     struct Matrix *rotated_matrix = create_matrix(matrix->row_size, matrix->col_size);
@@ -62,7 +61,7 @@ struct Matrix *rotate_block_clockwise(struct Matrix *matrix)
     return rotated_matrix;
 }
 
-struct Matrix *rotate_block_anticlockwise(struct Matrix *matrix)
+struct Matrix *rotate_matrix_anticlockwise(struct Matrix *matrix)
 {        
     int i, j, k;
     struct Matrix *rotated_matrix = create_matrix(matrix->row_size, matrix->col_size);
@@ -83,7 +82,7 @@ struct Block *rotate_block(struct Block *block, bool clockwise)
 {
     struct Matrix *transposed_matrix = transpose_matrix(block->matrix);
 
-    struct Matrix *rotated_matrix = (clockwise) ? rotate_block_clockwise(transposed_matrix) : rotate_block_anticlockwise(transposed_matrix);
+    struct Matrix *rotated_matrix = (clockwise) ? rotate_matrix_clockwise(transposed_matrix) : rotate_matrix_anticlockwise(transposed_matrix);
 
     free_matrix(transposed_matrix);
 
@@ -100,8 +99,7 @@ struct Block *get_random_block(struct BlockList *block_list)
 
     int random_block = rand() % block_list->elements_number;
 
-    struct Block *block = get(block_list, 6);
-    //struct Block *block = get(block_list, random_block);
+    struct Block *block = get(block_list, random_block);
     
     struct Block *new_block = malloc(sizeof(struct Block));
     new_block->color = block->color;
@@ -133,7 +131,7 @@ void set_default_values(struct Board *board)
 {
     board->next_block = get_random_block(board->default_blocks);
     // TODO: Calculate the right initial position of x
-    board->current_block_x = (board->width - 3) / 2;
+    board->current_block_x = 0;
     board->current_block_y = -1;
 
 }
@@ -149,7 +147,7 @@ struct Board *create_board(int width, int height)
     board->width = width;
     board->height = height; 
 
-    board->default_blocks = read_from_file("default_blocks");
+    board->default_blocks = read_from_file("temp");
 
     board->current_block = get_random_block(board->default_blocks);
     set_default_values(board);
@@ -250,31 +248,25 @@ void print_current_block(struct Board *board, int index)
     }
 }
 
+bool block_fits(struct Board *, int, int);
 
-
-void move_to_left(struct Board *board)
+void move(struct Board *board, bool left)
 {
-    int new_x = board->current_block_x - 1;
-    
+    int current_x = board->current_block_x;
+
+    int new_x = (left) ? current_x -1 : current_x + 1;
+
     erase_current_block(board);
     
-    board->current_block_x = (new_x < 0) ? 0 : new_x;
+    bool fits = block_fits(board, board->current_block_y, new_x);
+
+    if(fits)
+    {
+        board->current_block_x = new_x;
+    }
 
     print_current_block(board, board->current_block_y);
 }
-
-void move_to_right(struct Board *board)
-{
-    int new_x = board->current_block_x + 1;
-
-    erase_current_block(board);
-
-    // TODO: Refactor this
-    board->current_block_x = (new_x + board->current_block->matrix->col_size > board->width) ? board->width - board->current_block->matrix->col_size : new_x;
-
-    print_current_block(board, board->current_block_y);
-}
-
 
 bool game_over(struct Board *board, bool fits)
 {
@@ -291,16 +283,7 @@ bool game_over(struct Board *board, bool fits)
     return false;
 }
 
-bool rotate_clockwise(struct Board *board)
-{
-    struct Block *old_block = board->current_block;
-    
-    struct Block *rotated_block = rotate_block_clockwise(board->current_block);
-    
-    return true;
-}
-
-bool block_fits(struct Board *board, int new_y)
+bool block_fits(struct Board *board, int new_y, int new_x)
 {
     int i, j, k, m;
     for (i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
@@ -308,6 +291,11 @@ bool block_fits(struct Board *board, int new_y)
         for (j = board->current_block_x, m = 0; j < board->current_block->matrix->col_size + board->current_block_x; j++, m++)
         {
             if(i >= board-> height && board->current_block->matrix->values[k][m] == true)
+            {
+                return false;
+            }
+
+            if((j < 0 || j >= board->width) && board->current_block->matrix->values[k][m] == true)
             {
                 return false;
             }
@@ -324,6 +312,36 @@ bool block_fits(struct Board *board, int new_y)
     return true;
 }
 
+bool block_fits_default(struct Board *board)
+{
+    block_fits(board, board->current_block_y, board->current_block_x);
+}
+
+
+bool rotate(struct Board *board, bool clockwise)
+{
+    struct Block *old_block = board->current_block;
+
+    erase_current_block(board);
+    board->current_block = rotate_block(board->current_block, clockwise);
+
+    bool fits = block_fits_default(board);
+    
+    if (fits)
+    {
+        free_block(old_block);
+    }
+    else
+    {
+        free_block(board->current_block);
+        board->current_block = old_block;
+    }
+
+    print_current_block(board, board->current_block_y);
+     
+    return fits;
+}
+
 bool next_move(struct Board *board)
 {
 
@@ -333,7 +351,7 @@ bool next_move(struct Board *board)
    
     erase_current_block(board); 
     
-    bool fits = block_fits(board, new_y); 
+    bool fits = block_fits(board, new_y, board->current_block_x); 
 
     if (game_over(board, fits))
     {
