@@ -21,4 +21,8 @@ void free_board(struct Board *board);
 
 void free_list(struct BlockList* blockList);
 
+struct Matrix *clone_matrix(struct Matrix *matrix);
+
+enum Color **malloc_collor_matrix(int width, int height);
+
 #endif /* BOILERPLATE_H */

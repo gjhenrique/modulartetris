@@ -6,6 +6,7 @@
 #include "model.h"
 #include "block_list.h"
 #include "boilerplate.h"
+#include "board.h"
 
 int main()
 {
@@ -42,7 +43,6 @@ int main()
     print_board(board);
     rotate_clockwise(board);
     print_board(board);
-
 
     return 0;
 }

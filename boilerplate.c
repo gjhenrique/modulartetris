@@ -120,3 +120,37 @@ void free_list(struct BlockList* blockList)
 
     free(blockList);
 }
+
+struct Matrix *clone_matrix(struct Matrix *matrix)
+{
+    int i, j;
+    struct Matrix *new_matrix = create_matrix(matrix->row_size, matrix->col_size);
+
+    for (i = 0 ; i < matrix->row_size; i++)
+    {
+        for (j = 0; j < matrix->col_size; j++)
+        {
+            new_matrix->values[i][j] = matrix->values[i][j];
+        }
+    }
+    return new_matrix;
+}
+
+enum Color **malloc_collor_matrix(int width, int height)
+{
+    int i, j;
+    enum Color **colors = malloc(height * sizeof(enum Color *));
+
+    for ( i = 0; i < height; i++)
+        colors[i] = malloc(width * sizeof(enum Color));
+
+    for (i = 0; i < height; ++i)
+    {
+        for (j = 0; j < width; j++)
+        {
+            colors[i][j] = NONE;        
+        }
+    }
+
+    return colors;
+}

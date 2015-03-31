@@ -4,128 +4,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "model.h"
+#include "board.h"
 #include "block_list.h"
 #include "matrix_file.h"
 #include "boilerplate.h"
-
-//TODO:
-// Verificar se completou blocos
-// Rotation of block in board
-
-struct Matrix *transpose_matrix(struct Matrix *matrix)
-{
-    int i, j;
-    struct Matrix *transposed_matrix = create_matrix(matrix->col_size, matrix->row_size);
-
-    for (i = 0; i < transposed_matrix->row_size; i++)
-    {
-        for (j = 0; j < transposed_matrix->col_size; j++)
-        {
-            transposed_matrix->values[i][j] = matrix->values[j][i];
-        }
-    }
-
-    return transposed_matrix;
-}
-
-// Push to boilerplate
-struct Matrix *clone_matrix(struct Matrix *matrix)
-{
-    int i, j;
-    struct Matrix *new_matrix = create_matrix(matrix->row_size, matrix->col_size);
-
-    for (i = 0 ; i < matrix->row_size; i++)
-    {
-        for (j = 0; j < matrix->col_size; j++)
-        {
-            new_matrix->values[i][j] = matrix->values[i][j];
-        }
-    }
-    return new_matrix;
-}
-
-struct Matrix *rotate_matrix_clockwise(struct Matrix *matrix)
-{
-    int i, j, k;
-    struct Matrix *rotated_matrix = create_matrix(matrix->row_size, matrix->col_size);
-
-    for (i = 0 ; i < matrix->row_size; i++)
-    {
-        for (j = 0, k = matrix->col_size - 1; j < matrix->col_size; j++, k--)
-        {
-            rotated_matrix->values[i][j] = matrix->values[i][k];
-        }
-    }
-
-    return rotated_matrix;
-}
-
-struct Matrix *rotate_matrix_anticlockwise(struct Matrix *matrix)
-{        
-    int i, j, k;
-    struct Matrix *rotated_matrix = create_matrix(matrix->row_size, matrix->col_size);
-
-    for (i = 0, k = matrix->row_size - 1; i < matrix->row_size; i++, k--)
-    {
-        for (j = 0; j < matrix->col_size; j++)
-        {
-            rotated_matrix->values[i][j] = matrix->values[k][j];
-        }
-    }
-
-    return rotated_matrix;
-}
-
-// Algorithm taken from http://stackoverflow.com/questions/42519/how-do-you-rotate-a-two-dimensional-array
-struct Block *rotate_block(struct Block *block, bool clockwise)
-{
-    struct Matrix *transposed_matrix = transpose_matrix(block->matrix);
-
-    struct Matrix *rotated_matrix = (clockwise) ? rotate_matrix_clockwise(transposed_matrix) : rotate_matrix_anticlockwise(transposed_matrix);
-
-    free_matrix(transposed_matrix);
-
-    struct Block *new_block = malloc(sizeof(struct Block));
-    new_block->color = block->color;
-    new_block->matrix = rotated_matrix;
-
-    return new_block;
-}
-
-struct Block *get_random_block(struct BlockList *block_list)
-{
-    int i;
-
-    int random_block = rand() % block_list->elements_number;
-
-    struct Block *block = get(block_list, random_block);
-    
-    struct Block *new_block = malloc(sizeof(struct Block));
-    new_block->color = block->color;
-    new_block->matrix = clone_matrix(block->matrix); 
-
-   return new_block;
-}
-
-enum Color **malloc_collor_matrix(int width, int height)
-{
-    int i, j;
-    enum Color **colors = malloc(height * sizeof(enum Color *));
-
-    for ( i = 0; i < height; i++)
-        colors[i] = malloc(width * sizeof(enum Color));
-
-    for (i = 0; i < height; ++i)
-    {
-        for (j = 0; j < width; j++)
-        {
-            colors[i][j] = NONE;        
-        }
-    }
-
-    return colors;
-}
+#include "block.h"
 
 void set_default_values(struct Board *board)
 {
@@ -161,9 +44,7 @@ struct Board *create_board(int width, int height)
 
 void replace_lines(struct Board *board, int row)
 {
-    int i, j, k, tmp;
-
-    for(i = 0; i < board->width; i++)
+    int i, j, k, tmp;    for(i = 0; i < board->width; i++)
     {
         for(j = row - 1; j >=0; j--)
         {
