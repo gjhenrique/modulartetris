@@ -14,7 +14,7 @@ int main()
 
     struct Board *board = create_board(5, 10);
     
-    for (i = 0; i < 9; ++i)
+    for (i = 0; i < 90; ++i)
     {
         /*for (j = 0; j < 10; j++)
         {
@@ -29,20 +29,11 @@ int main()
 
         if(board->is_game_over)
         {
-            print_matrix(board->current_block->matrix);
             return 0;
         }
         
         print_board(board);
     }
-
-    rotate_clockwise(board);
-    print_board(board);
-    move_to_left(board);
-    //move_to_left(board);
-    print_board(board);
-    rotate_clockwise(board);
-    print_board(board);
 
     return 0;
 }

@@ -13,10 +13,10 @@
 void set_default_values(struct Board *board)
 {
     board->next_block = get_random_block(board->default_blocks);
-    // TODO: Calculate the right initial position of x
-    board->current_block_x = 0;
-    board->current_block_y = -1;
+    
+    board->current_block_x = (board->width / 2) - (board->current_block->matrix->col_size / 2);
 
+    board->current_block_y = -1;
 }
 
 struct Board *create_board(int width, int height)
@@ -30,7 +30,7 @@ struct Board *create_board(int width, int height)
     board->width = width;
     board->height = height; 
 
-    board->default_blocks = read_from_file("temp");
+    board->default_blocks = read_from_file("default_blocks");
 
     board->current_block = get_random_block(board->default_blocks);
     set_default_values(board);
