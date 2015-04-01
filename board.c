@@ -44,7 +44,9 @@ struct Board *create_board(int width, int height)
 
 void replace_lines(struct Board *board, int row)
 {
-    int i, j, k, tmp;    for(i = 0; i < board->width; i++)
+    int i, j, k, tmp;    
+    
+    for(i = 0; i < board->width; i++)
     {
         for(j = row - 1; j >=0; j--)
         {

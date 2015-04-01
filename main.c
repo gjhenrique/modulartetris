@@ -12,7 +12,7 @@ int main()
 {
     int i, j;
 
-    struct Board *board = create_board(5, 10);
+    struct Board *board = create_board(5, 100);
     
     for (i = 0; i < 90; ++i)
     {
@@ -26,15 +26,17 @@ int main()
         
         //move_to_bottom(board);
         next_move(board);
-
         if(board->is_game_over)
         {
+
+            free_board(board);
             return 0;
         }
         
-        print_board(board);
+        //print_board(board);
     }
-
+    
+    free_board(board);
     return 0;
 }
 

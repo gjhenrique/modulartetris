@@ -82,6 +82,7 @@ void free_matrix(struct Matrix *matrix)
     }
 
     free(matrix->values);
+    free(matrix);
 }
 
 void free_block(struct Block *block) 
@@ -92,33 +93,41 @@ void free_block(struct Block *block)
 
 void free_board(struct Board *board)
 {    
+    int i;
+
     free_list(board->default_blocks);
 
     if(board->current_block)
-        free(board->current_block);
+        free_block(board->current_block);
 
     if(board->next_block)
-        free(board->next_block);
+        free_block(board->next_block);
+
+    for (i = 0; i < board->height; i++)
+    {
+        free(board->visited[i]);
+    }
+    
+    free(board->visited);
 
     free(board);
 }
 
-void free_list(struct BlockList* blockList)
+void free_list(struct BlockList* block_list)
 {
     int i = 0;
     
-    struct BlockNode *node = blockList->HEAD;
+    struct BlockNode *node = block_list->HEAD;
     struct BlockNode *tmp = NULL; 
 
     for (tmp = node; tmp != NULL; tmp = node)
     {
         node = node->next;
-
         free_block(tmp->block); 
         free(tmp);
     }
 
-    free(blockList);
+    free(block_list);
 }
 
 struct Matrix *clone_matrix(struct Matrix *matrix)

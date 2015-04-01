@@ -15,7 +15,6 @@ struct Matrix *populate_matrix(FILE *file, int row_size, int col_size)
     size_t len = 0;
 
     struct Matrix *matrix = create_matrix(row_size, col_size);         
-
     for (i = 0; i < matrix->row_size; ++i)
     {
         getline(&line, &len, file);
@@ -23,6 +22,8 @@ struct Matrix *populate_matrix(FILE *file, int row_size, int col_size)
         {
             matrix->values[i][k] = to_digit(line[j]);
         }
+        free(line);
+        line = NULL;
     }
     
    return matrix; 
@@ -58,9 +59,7 @@ struct BlockList *read_lines(FILE *file)
         {
             struct Block *block = malloc(sizeof(struct Block));
 
-            struct Matrix* matrix = read_matrix(file, line);            
-
-            block->matrix = matrix;
+            block->matrix = read_matrix(file, line);
 
             // Jumping color NONE
             if(color_index == NONE)
