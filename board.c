@@ -131,7 +131,34 @@ void print_current_block(struct Board *board, int index)
     }
 }
 
-bool block_fits(struct Board *, int, int);
+bool block_fits(struct Board *board, int new_y, int new_x)
+{
+    int i, j, k, m;
+    for (i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
+    {
+        for (j = board->current_block_x, m = 0; j < board->current_block->matrix->col_size + board->current_block_x; j++, m++)
+        {
+            if(i >= board-> height && board->current_block->matrix->values[k][m] == true)
+            {
+                return false;
+            }
+
+            if((j < 0 || j >= board->width) && board->current_block->matrix->values[k][m] == true)
+            {
+                return false;
+            }
+
+            if (i < board->height && i >= 0)
+            {
+                if (board->visited[i][j] != NONE && board->current_block->matrix->values[k][m] == true)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
 
 void move(struct Board *board, bool left)
 {
@@ -166,40 +193,10 @@ bool game_over(struct Board *board, bool fits)
     return false;
 }
 
-bool block_fits(struct Board *board, int new_y, int new_x)
-{
-    int i, j, k, m;
-    for (i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
-    {
-        for (j = board->current_block_x, m = 0; j < board->current_block->matrix->col_size + board->current_block_x; j++, m++)
-        {
-            if(i >= board-> height && board->current_block->matrix->values[k][m] == true)
-            {
-                return false;
-            }
-
-            if((j < 0 || j >= board->width) && board->current_block->matrix->values[k][m] == true)
-            {
-                return false;
-            }
-
-            if (i < board->height && i >= 0)
-            {
-                if (board->visited[i][j] != NONE && board->current_block->matrix->values[k][m] == true)
-                {
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
-}
-
 bool block_fits_default(struct Board *board)
 {
     block_fits(board, board->current_block_y, board->current_block_x);
 }
-
 
 bool rotate(struct Board *board, bool clockwise)
 {
@@ -249,9 +246,7 @@ bool next_move(struct Board *board)
         prepare_next_block(board);
         return false;
     }
-    
-    print_current_block(board, new_y);
-
+    print_current_block(board, new_y); 
     board->current_block_y = new_y;
 
     return true;
