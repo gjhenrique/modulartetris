@@ -17,7 +17,7 @@ void print_matrix(struct Matrix *matrix)
     {
         for (int j = 0; j < matrix->col_size; ++j)
         {
-           printf("%d\t", matrix->values[i][j]); 
+           printf("%d\t", matrix->values[i][j]);
         }
         printf("\n");
     }
@@ -35,7 +35,7 @@ void print_board(struct Board *board)
             printf ("\t");
         }
         printf("\n");
-    } 
+    }
     printf("\n\n");
 }
 
@@ -52,16 +52,16 @@ struct Matrix *create_matrix(int row_size, int col_size) {
 
 bool **malloc_matrix(int row_size, int col_size)
 {
-    bool **matrix = malloc(row_size * (sizeof(bool*))); 
+    bool **matrix = malloc(row_size * (sizeof(bool*)));
 
-    for (int i = 0; i < row_size; i++) 
+    for (int i = 0; i < row_size; i++)
         matrix[i] = malloc(col_size * sizeof(bool));
 
     for (int i = 0; i < row_size; i++)
     {
         for (int j = 0; j < col_size; j++)
         {
-            matrix[i][j] = 0; 
+            matrix[i][j] = 0;
         }
     }
 
@@ -78,14 +78,14 @@ void free_matrix(struct Matrix *matrix)
     free(matrix);
 }
 
-void free_block(struct Block *block) 
+void free_block(struct Block *block)
 {
     free_matrix(block->matrix);
     free(block);
 }
 
 void free_board(struct Board *board)
-{    
+{
     free_list(board->default_blocks);
 
     if(board->current_block)
@@ -98,7 +98,7 @@ void free_board(struct Board *board)
     {
         free(board->visited[i]);
     }
-    
+
     free(board->visited);
 
     free(board);
@@ -107,12 +107,12 @@ void free_board(struct Board *board)
 void free_list(struct BlockList* block_list)
 {
     struct BlockNode *node = block_list->HEAD;
-    struct BlockNode *tmp = NULL; 
+    struct BlockNode *tmp = NULL;
 
     for (tmp = node; tmp != NULL; tmp = node)
     {
         node = node->next;
-        free_block(tmp->block); 
+        free_block(tmp->block);
         free(tmp);
     }
 
@@ -146,7 +146,7 @@ enum Color **malloc_collor_matrix(int width, int height)
     {
         for (int j = 0; j < width; j++)
         {
-            colors[i][j] = NONE;        
+            colors[i][j] = NONE;
         }
     }
 

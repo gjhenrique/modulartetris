@@ -13,7 +13,7 @@
 void set_default_values(struct Board *board)
 {
     board->next_block = get_random_block(board->default_blocks);
-    
+
     board->current_block_x = (board->width / 2) - (board->current_block->matrix->col_size / 2);
 
     board->current_block_y = -1;
@@ -28,7 +28,7 @@ struct Board *create_board(int width, int height)
     struct Board *board = malloc(sizeof(struct Board));
 
     board->width = width;
-    board->height = height; 
+    board->height = height;
 
     board->default_blocks = read_from_file("default_blocks");
 
@@ -58,7 +58,7 @@ void replace_lines(struct Board *board, int row)
             {
                 int tmp = board->visited[j][i];
                 board->visited[j][i] = 0;
-                board->visited[j+1][i] = tmp;               
+                board->visited[j+1][i] = tmp;
             }
         }
     }
@@ -164,7 +164,7 @@ void move(struct Board *board, bool left)
     int new_x = (left) ? current_x -1 : current_x + 1;
 
     erase_current_block(board);
-    
+
     bool fits = block_fits(board, board->current_block_y, new_x);
 
     if(fits)
@@ -178,7 +178,7 @@ void move(struct Board *board, bool left)
 bool game_over(struct Board *board, bool fits)
 {
     int i;
-    int new_y = board->current_block_y; 
+    int new_y = board->current_block_y;
 
     for (i = new_y; i > new_y - board->current_block->matrix->row_size; i--)
     {
@@ -203,7 +203,7 @@ bool rotate(struct Board *board, bool clockwise)
     board->current_block = rotate_block(board->current_block, clockwise);
 
     bool fits = block_fits_default(board);
-    
+
     if (fits)
     {
         free_block(old_block);
@@ -215,7 +215,7 @@ bool rotate(struct Board *board, bool clockwise)
     }
 
     print_current_block(board, board->current_block_y);
-     
+
     return fits;
 }
 
@@ -223,12 +223,12 @@ bool next_move(struct Board *board)
 {
 
     int new_y = board->current_block_y + 1;
-    
-    int i, j; 
-   
-    erase_current_block(board); 
-    
-    bool fits = block_fits(board, new_y, board->current_block_x); 
+
+    int i, j;
+
+    erase_current_block(board);
+
+    bool fits = block_fits(board, new_y, board->current_block_x);
 
     if (game_over(board, fits))
     {
@@ -243,7 +243,7 @@ bool next_move(struct Board *board)
         prepare_next_block(board);
         return false;
     }
-    print_current_block(board, new_y); 
+    print_current_block(board, new_y);
     board->current_block_y = new_y;
 
     return true;

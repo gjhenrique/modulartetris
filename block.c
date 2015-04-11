@@ -38,7 +38,7 @@ struct Matrix *rotate_matrix_clockwise(struct Matrix *matrix)
 }
 
 struct Matrix *rotate_matrix_anticlockwise(struct Matrix *matrix)
-{        
+{
     struct Matrix *rotated_matrix = create_matrix(matrix->row_size, matrix->col_size);
 
     for (int i = 0, k = matrix->row_size - 1; i < matrix->row_size; i++, k--)
@@ -75,10 +75,10 @@ struct Block *get_random_block(struct BlockList *block_list)
     int random_block = rand() % block_list->elements_number;
 
     struct Block *block = get(block_list, random_block);
-    
+
     struct Block *new_block = malloc(sizeof(struct Block));
     new_block->color = block->color;
-    new_block->matrix = clone_matrix(block->matrix); 
+    new_block->matrix = clone_matrix(block->matrix);
 
    return new_block;
 }

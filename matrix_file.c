@@ -13,7 +13,7 @@ struct Matrix *populate_matrix(FILE *file, int row_size, int col_size)
     char *line = NULL;
     size_t len = 0;
 
-    struct Matrix *matrix = create_matrix(row_size, col_size);         
+    struct Matrix *matrix = create_matrix(row_size, col_size);
     for (int i = 0; i < matrix->row_size; ++i)
     {
         getline(&line, &len, file);
@@ -24,17 +24,17 @@ struct Matrix *populate_matrix(FILE *file, int row_size, int col_size)
         free(line);
         line = NULL;
     }
-    
-   return matrix; 
+
+   return matrix;
 }
 
 struct Matrix *read_matrix(FILE *file, char *line)
 {
-    int i, j, k, row_size, col_size;        
-    
+    int i, j, k, row_size, col_size;
+
     if (strlen(line) != 2)
     {
-        fprintf(stderr, "Line %s is malformed", line); 
+        fprintf(stderr, "Line %s is malformed", line);
         exit(EXIT_FAILURE);
     }
 
@@ -48,7 +48,7 @@ struct BlockList *read_lines(FILE *file)
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
-     
+
     int color_index = 0;
     struct BlockList *block_list = create_list();
 
@@ -64,7 +64,7 @@ struct BlockList *read_lines(FILE *file)
             if(color_index == NONE)
                 color_index++;
 
-            block->color = color_index++; 
+            block->color = color_index++;
 
             add(block_list, block);
         }
@@ -75,13 +75,13 @@ struct BlockList *read_lines(FILE *file)
         free(line);
     }
 
-    return block_list; 
+    return block_list;
 }
 
 // ** Array of pointers
 struct BlockList *read_from_file(char *file_name)
 {
-    
+
     FILE *file = fopen(file_name, "r");
 
     if (file == NULL)

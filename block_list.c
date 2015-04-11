@@ -9,7 +9,7 @@ struct BlockList *create_list()
 
     block_list->HEAD = NULL;
     block_list->elements_number = 0;
-    
+
     return block_list;
 }
 
@@ -41,18 +41,18 @@ struct Block *get(struct BlockList *block_list, int index)
         fprintf(stderr, "%d is bigger than the current number of elements in the list: %d", index, block_list->elements_number);
         return NULL;
     }
-    
+
     if (block_list->HEAD == NULL)
     {
-        fprintf(stderr, "HEAD is empty"); 
+        fprintf(stderr, "HEAD is empty");
     }
 
     struct BlockNode *block_node = block_list->HEAD;
 
     for (i = 0; i < index; ++i)
     {
-        block_node = block_node->next;      
-    } 
-    
+        block_node = block_node->next;
+    }
+
     return block_node->block;
 }

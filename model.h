@@ -5,30 +5,30 @@
 
 struct Matrix
 {
-    bool **values;   
+    bool **values;
     int col_size;
     int row_size;
 };
 
-enum Color 
+enum Color
 {
     NONE, RED, BLUE, GREEN, ORANGE, PINK, BROWN, PURPLE
 };
 
-struct Block 
+struct Block
 {
     struct Matrix *matrix;
     enum Color color;
 };
 
-struct Board 
+struct Board
 {
     int height;
     int width;
 
     int current_block_x;
     int current_block_y;
-    
+
     // Pointer to Block
     struct Block *current_block;
 
