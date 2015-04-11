@@ -10,15 +10,14 @@
 
 struct Matrix *populate_matrix(FILE *file, int row_size, int col_size)
 {
-    int i, j, k;
     char *line = NULL;
     size_t len = 0;
 
     struct Matrix *matrix = create_matrix(row_size, col_size);         
-    for (i = 0; i < matrix->row_size; ++i)
+    for (int i = 0; i < matrix->row_size; ++i)
     {
         getline(&line, &len, file);
-        for(j = 0, k = 0; k < matrix->col_size; j+=2, k++)
+        for(int j = 0, k = 0; k < matrix->col_size; j+=2, k++)
         {
             matrix->values[i][k] = to_digit(line[j]);
         }
@@ -33,7 +32,7 @@ struct Matrix *read_matrix(FILE *file, char *line)
 {
     int i, j, k, row_size, col_size;        
     
-    if (strlen(line) != 4)
+    if (strlen(line) != 2)
     {
         fprintf(stderr, "Line %s is malformed", line); 
         exit(EXIT_FAILURE);

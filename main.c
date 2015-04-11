@@ -10,11 +10,10 @@
 
 int main()
 {
-    int i, j;
 
     struct Board *board = create_board(5, 100);
     
-    for (i = 0; i < 90; ++i)
+    for (int i = 0; i < 90; ++i)
     {
         /*for (j = 0; j < 10; j++)
         {

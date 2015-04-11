@@ -32,6 +32,12 @@ struct Board *create_board(int width, int height)
 
     board->default_blocks = read_from_file("default_blocks");
 
+    if(board->default_blocks->elements_number == 0)
+    {
+        fprintf(stderr, "Number of tetrominos is empty");
+        exit(0);
+    }
+
     board->current_block = get_random_block(board->default_blocks);
     set_default_values(board);
 
@@ -44,15 +50,13 @@ struct Board *create_board(int width, int height)
 
 void replace_lines(struct Board *board, int row)
 {
-    int i, j, k, tmp;    
-    
-    for(i = 0; i < board->width; i++)
+    for(int i = 0; i < board->width; i++)
     {
-        for(j = row - 1; j >=0; j--)
+        for(int j = row - 1; j >=0; j--)
         {
             if(board->visited[j+1][i] != NONE)
             {
-                tmp = board->visited[j][i];
+                int tmp = board->visited[j][i];
                 board->visited[j][i] = 0;
                 board->visited[j+1][i] = tmp;               
             }
@@ -62,8 +66,7 @@ void replace_lines(struct Board *board, int row)
 
 bool check_line(struct Board *board, int line)
 {
-    int i, j;
-    for (i = 0; i < board->width; i++)
+    for (int i = 0; i < board->width; i++)
     {
         if(board->visited[line][i] == NONE)
         {
@@ -76,9 +79,7 @@ bool check_line(struct Board *board, int line)
 
 void check_lines(struct Board *board)
 {
-    int i;
-
-    for (i = 0; i < board->height; i++)
+    for (int i = 0; i < board->height; i++)
     {
         if(check_line(board, i))
         {
@@ -98,10 +99,9 @@ void prepare_next_block(struct Board * board)
 
 void erase_current_block(struct Board *board)
 {
-    int i, j, k, m;
-    for (i = board->current_block_y, k = board->current_block->matrix->row_size - 1; i > board->current_block_y - board->current_block->matrix->row_size; i--, k--)
+    for (int i = board->current_block_y, k = board->current_block->matrix->row_size - 1; i > board->current_block_y - board->current_block->matrix->row_size; i--, k--)
     {
-        for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
+        for (int j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
         {
             if(i < board->height && i >= 0)
             {
@@ -114,11 +114,9 @@ void erase_current_block(struct Board *board)
 
 void print_current_block(struct Board *board, int index)
 {
-    int i , k, j, m;
-
-    for (i = index, k = board->current_block->matrix->row_size - 1; i > index - board->current_block->matrix->row_size; i--, k--)
+    for (int i = index, k = board->current_block->matrix->row_size - 1; i > index - board->current_block->matrix->row_size; i--, k--)
     {
-        for (j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
+        for (int j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
         {
             if (i < board->height && i >= 0)
             {
@@ -133,10 +131,9 @@ void print_current_block(struct Board *board, int index)
 
 bool block_fits(struct Board *board, int new_y, int new_x)
 {
-    int i, j, k, m;
-    for (i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
+    for (int i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
     {
-        for (j = board->current_block_x, m = 0; j < board->current_block->matrix->col_size + board->current_block_x; j++, m++)
+        for (int j = board->current_block_x, m = 0; j < board->current_block->matrix->col_size + board->current_block_x; j++, m++)
         {
             if(i >= board-> height && board->current_block->matrix->values[k][m] == true)
             {

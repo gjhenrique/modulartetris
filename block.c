@@ -9,12 +9,11 @@
 
 struct Matrix *transpose_matrix(struct Matrix *matrix)
 {
-    int i, j;
     struct Matrix *transposed_matrix = create_matrix(matrix->col_size, matrix->row_size);
 
-    for (i = 0; i < transposed_matrix->row_size; i++)
+    for (int i = 0; i < transposed_matrix->row_size; i++)
     {
-        for (j = 0; j < transposed_matrix->col_size; j++)
+        for (int j = 0; j < transposed_matrix->col_size; j++)
         {
             transposed_matrix->values[i][j] = matrix->values[j][i];
         }
@@ -25,12 +24,11 @@ struct Matrix *transpose_matrix(struct Matrix *matrix)
 
 struct Matrix *rotate_matrix_clockwise(struct Matrix *matrix)
 {
-    int i, j, k;
     struct Matrix *rotated_matrix = create_matrix(matrix->row_size, matrix->col_size);
 
-    for (i = 0 ; i < matrix->row_size; i++)
+    for (int i = 0 ; i < matrix->row_size; i++)
     {
-        for (j = 0, k = matrix->col_size - 1; j < matrix->col_size; j++, k--)
+        for (int j = 0, k = matrix->col_size - 1; j < matrix->col_size; j++, k--)
         {
             rotated_matrix->values[i][j] = matrix->values[i][k];
         }
@@ -41,12 +39,11 @@ struct Matrix *rotate_matrix_clockwise(struct Matrix *matrix)
 
 struct Matrix *rotate_matrix_anticlockwise(struct Matrix *matrix)
 {        
-    int i, j, k;
     struct Matrix *rotated_matrix = create_matrix(matrix->row_size, matrix->col_size);
 
-    for (i = 0, k = matrix->row_size - 1; i < matrix->row_size; i++, k--)
+    for (int i = 0, k = matrix->row_size - 1; i < matrix->row_size; i++, k--)
     {
-        for (j = 0; j < matrix->col_size; j++)
+        for (int j = 0; j < matrix->col_size; j++)
         {
             rotated_matrix->values[i][j] = matrix->values[k][j];
         }
