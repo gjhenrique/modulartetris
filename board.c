@@ -129,7 +129,7 @@ void print_current_block(struct Board *board, int index)
     }
 }
 
-bool block_fits(struct Board *board, int new_y, int new_x)
+bool block_fits(struct Board *board, int new_y)
 {
     for (int i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
     {
@@ -165,7 +165,7 @@ void move(struct Board *board, bool left)
 
     erase_current_block(board);
 
-    bool fits = block_fits(board, board->current_block_y, new_x);
+    bool fits = block_fits(board, board->current_block_y);
 
     if(fits)
     {
@@ -192,7 +192,7 @@ bool game_over(struct Board *board, bool fits)
 
 bool block_fits_default(struct Board *board)
 {
-    block_fits(board, board->current_block_y, board->current_block_x);
+    block_fits(board, board->current_block_y);
 }
 
 bool rotate(struct Board *board, bool clockwise)
@@ -228,7 +228,7 @@ bool next_move(struct Board *board)
 
     erase_current_block(board);
 
-    bool fits = block_fits(board, new_y, board->current_block_x);
+    bool fits = block_fits(board, new_y);
 
     if (game_over(board, fits))
     {
