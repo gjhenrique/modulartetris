@@ -15,7 +15,7 @@
 
 bool next_move (struct Board *board);
 
-struct Board *create_board(int width, int height);
+struct Board *create_board(int width, int height, struct BlockList *blockList);
 
 bool rotate(struct Board *, bool);
 

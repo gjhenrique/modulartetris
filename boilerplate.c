@@ -17,7 +17,7 @@ void print_matrix(struct Matrix *matrix)
     {
         for (int j = 0; j < matrix->col_size; ++j)
         {
-           printf("%d\t", matrix->values[i][j]);
+         printf("%d\t", matrix->values[i][j]);
         }
         printf("\n");
     }

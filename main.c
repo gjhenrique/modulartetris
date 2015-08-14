@@ -10,8 +10,8 @@
 
 int main()
 {
-
-    struct Board *board = create_board(5, 100);
+    struct BlockList *blockList = read_from_file("default_blocks");
+    struct Board *board = create_board(5, 100, blockList);
 
     for (int i = 0; i < 90; ++i)
     {

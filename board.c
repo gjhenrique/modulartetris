@@ -19,7 +19,7 @@ void set_default_values(struct Board *board)
     board->current_block_y = -1;
 }
 
-struct Board *create_board(int width, int height)
+struct Board *create_board(int width, int height, struct BlockList *blockList)
 {
     int i, j;
 
@@ -30,7 +30,7 @@ struct Board *create_board(int width, int height)
     board->width = width;
     board->height = height;
 
-    board->default_blocks = read_from_file("default_blocks");
+    board->default_blocks = blockList;
 
     if(board->default_blocks->elements_number == 0)
     {
