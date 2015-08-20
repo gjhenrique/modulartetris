@@ -17,16 +17,23 @@ void add(struct BlockList *list, struct Block *block)
 {
     struct BlockNode *block_node = malloc(sizeof(struct BlockNode));
     block_node->block = block;
+    block_node->next = NULL;
 
     if (list->HEAD == NULL)
     {
         list->HEAD = block_node;
-        block_node->next = NULL;
     }
     else
     {
-        block_node->next = list->HEAD;
-        list->HEAD = block_node;
+        struct BlockNode *tmp = list->HEAD;
+        // Going to the final of the list
+        for(int i = 0; i < list->elements_number - 1; i++)
+        {
+            tmp = tmp->next;
+        }
+
+        tmp->next = block_node;
+        block_node->next = NULL;
     }
 
     list->elements_number++;
