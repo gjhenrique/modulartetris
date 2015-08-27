@@ -5,8 +5,10 @@
 #include "../block_list.h"
 #include "../matrix_file.h"
 #include "../boilerplate.h"
+#include "../model.h"
+#include "../board.h"
 
-int check_equals(struct Matrix *matrix, struct Matrix *tested_matrix)
+int check_matrix_equals(struct Matrix *matrix, struct Matrix *tested_matrix)
 {
     for (int i = 0; i < matrix->row_size; ++i)
     {
@@ -21,24 +23,38 @@ int check_equals(struct Matrix *matrix, struct Matrix *tested_matrix)
     return true;
 }
 
+// God bless VLA
+int check_board_equals(struct Board *board, bool tested_board[board->width][board->height])
+{
+    for(int i = 0; i < board->width; i++)
+    {
+        for(int j = 0; j < board->height; j++)
+        {
+          if((bool) board->visited[i][j] != tested_board[i][j])
+              return false;
+        }
+    }
+    return true;
+}
+
 int assert_blocks_rotation(struct Block *block, struct BlockList *block_list)
 {
-    ASSERTm("Normal", check_equals(block->matrix, get(block_list, 0)->matrix));
+    ASSERTm("Normal", check_matrix_equals(block->matrix, get(block_list, 0)->matrix));
 
     block = rotate_block(block, 1);
-    ASSERTm("1 clock", check_equals(block->matrix, get(block_list, 1)->matrix));
+    ASSERTm("1 clock", check_matrix_equals(block->matrix, get(block_list, 1)->matrix));
 
     block = rotate_block(block, 1);
-    ASSERTm("2 clock", check_equals(block->matrix, get(block_list, 3)->matrix));
+    ASSERTm("2 clock", check_matrix_equals(block->matrix, get(block_list, 3)->matrix));
 
     block = rotate_block(block, 1);
-    ASSERTm("3 clock", check_equals(block->matrix, get(block_list, 2)->matrix));
+    ASSERTm("3 clock", check_matrix_equals(block->matrix, get(block_list, 2)->matrix));
 
     block = rotate_block(block, 1);
-    ASSERTm("4 clock", check_equals(block->matrix, get(block_list, 0)->matrix));
+    ASSERTm("4 clock", check_matrix_equals(block->matrix, get(block_list, 0)->matrix));
 
     block = rotate_block(block, 0);
-    ASSERTm("1 anticlock", check_equals(block->matrix, get(block_list, 2)->matrix));
+    ASSERTm("1 anticlock", check_matrix_equals(block->matrix, get(block_list, 2)->matrix));
     PASS();
 }
 
@@ -150,10 +166,10 @@ TEST test_J(void)
                              "3\n1 0 0\n1 0 0\n1 1 0\n"
                              "3\n0 0 0\n0 0 1\n1 1 1";
 
-  char target_block[] = "3\n1 1 1\n1 0 0\n0 0 0";
+    char target_block[] = "3\n1 1 1\n1 0 0\n0 0 0";
 
-  CHECK_CALL(test_blocks_rotation(target_block, rotation_blocks));
-  PASS();
+    CHECK_CALL(test_blocks_rotation(target_block, rotation_blocks));
+    PASS();
 }
 
 SUITE(block)
@@ -167,11 +183,42 @@ SUITE(block)
     RUN_TEST(test_J);
 }
 
+TEST test_clear_line(void)
+{
+    bool board_test[4][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {1, 1, 1, 1}};
+    bool board_empty[4][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+
+    char square_block[] = "4\n0 0 0 0\n1 1 1 1\n0 0 0 0\n0 0 0 0";
+    struct BlockList *block_list = read_from_string(square_block);
+
+    struct Board *board = create_board(4, 4, block_list);
+    free(board->current_block);
+    board->current_block = clone_block(get(board->default_blocks,0));
+
+    for(int i = 0; i < 6; i++)
+    {
+        next_move(board);
+    }
+
+    ASSERT(check_board_equals(board, board_test));
+    next_move(board);
+    ASSERT(check_board_equals(board, board_empty));
+
+    free_board(board);
+    PASS();
+}
+
+SUITE(board)
+{
+    RUN_TEST(test_clean_board);
+}
+
 GREATEST_MAIN_DEFS();
 
 int main(int argc, char **argv)
 {
     GREATEST_MAIN_BEGIN();
     RUN_SUITE(block);
+    RUN_SUITE(board);
     GREATEST_MAIN_END();
 }

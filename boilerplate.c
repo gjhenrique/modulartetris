@@ -119,6 +119,15 @@ void free_list(struct BlockList* block_list)
     free(block_list);
 }
 
+struct Block *clone_block(struct Block *block)
+{
+    struct Block *new_block = malloc(sizeof(struct Block));
+    new_block->color = block->color;
+    new_block->matrix = clone_matrix(block->matrix);
+
+    return new_block;
+}
+
 struct Matrix *clone_matrix(struct Matrix *matrix)
 {
     struct Matrix *new_matrix = create_matrix(matrix->row_size, matrix->col_size);

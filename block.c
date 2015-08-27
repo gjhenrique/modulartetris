@@ -70,15 +70,9 @@ struct Block *rotate_block(struct Block *block, bool clockwise)
 
 struct Block *get_random_block(struct BlockList *block_list)
 {
-    int i;
-
     int random_block = rand() % block_list->elements_number;
 
     struct Block *block = get(block_list, random_block);
 
-    struct Block *new_block = malloc(sizeof(struct Block));
-    new_block->color = block->color;
-    new_block->matrix = clone_matrix(block->matrix);
-
-   return new_block;
+    return clone_block(block);
 }
