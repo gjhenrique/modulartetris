@@ -12,7 +12,7 @@ struct Matrix
 
 enum Color
 {
-    NONE, RED, BLUE, GREEN, ORANGE, PINK, BROWN, PURPLE
+    NONE, RED, BLUE, GREEN, YELLOW, PINK, PURPLE, ORANGE
 };
 
 struct Block
