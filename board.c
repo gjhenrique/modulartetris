@@ -52,44 +52,42 @@ void replace_lines(struct Board *board, int row)
     {
         for(int j = row - 1; j >=0; j--)
         {
-            if(board->visited[j+1][i] != NONE)
-            {
                 int tmp = board->visited[j][i];
-                board->visited[j][i] = 0;
+                board->visited[j][i] = board->visited[j][i];
                 board->visited[j+1][i] = tmp;
-            }
         }
     }
 }
 
-bool check_line(struct Board *board, int line)
+bool is_empty_line(struct Board *board, int line)
 {
     for (int i = 0; i < board->width; i++)
     {
         if(board->visited[line][i] == NONE)
         {
-            return false;
+            return true;
         }
     }
 
-    return true;
+    return false;
 }
 
-void check_lines(struct Board *board)
+bool check_lines(struct Board *board)
 {
     for (int i = 0; i < board->height; i++)
     {
-        if(check_line(board, i))
+        if(!is_empty_line(board, i))
         {
             replace_lines(board, i);
+            return true;
         }
     }
+    return false;
 }
-
 
 void prepare_next_block(struct Board * board)
 {
-    check_lines(board);
+    while(check_lines(board));
     free_block(board->current_block);
     board->current_block = board->next_block;
     set_default_values(board);
@@ -218,7 +216,6 @@ bool rotate(struct Board *board, bool clockwise)
 
 bool next_move(struct Board *board)
 {
-
     int new_y = board->current_block_y + 1;
 
     erase_current_block(board);

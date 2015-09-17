@@ -12,8 +12,12 @@
 #include "board.h"
 
 #define STEP 1000
-#define BOARD_WIDTH 20
-#define BOARD_HEIGHT 10
+#define BOARD_TOP      ((LINES-BOARD_HEIGHT)/2)
+#define BOARD_LEFT     ((COLS-BOARD_WIDTH)/2)
+#define BOARD_WIDTH 10
+#define BOARD_HEIGHT 15
+#define HOLD_HEIGHT  4
+#define HOLD_WIDTH   6
 
 struct NcursesGame
 {
@@ -56,13 +60,14 @@ void init_ncurses()
 
 struct NcursesGame *init_game()
 {
-
     struct NcursesGame *game = malloc(sizeof(struct NcursesGame));
     struct BlockList *blockList = read_from_file("default_blocks");
-    struct Board *board = create_board(10, 20, blockList);
+    struct Board *board = create_board(BOARD_WIDTH, BOARD_HEIGHT, blockList);
 
-    game->board_window = newwin(board->height + 2, board->width + 2, 10, 10);
+    game->board_window = newwin(board->height + 2, board->width + 2, BOARD_TOP, BOARD_LEFT);
+    game->next_block_window = newwin(HOLD_HEIGHT + 2, HOLD_WIDTH + 2, BOARD_TOP, BOARD_LEFT + BOARD_WIDTH + 2);
     game->board_panel = new_panel(game->board_window);
+    game->next_block_panel = new_panel(game->next_block_window);
 
     game->board = board;
 
@@ -75,7 +80,10 @@ struct NcursesGame *init_game()
 void draw_board(struct NcursesGame *game)
 {
     wclear(game->board_window);
+    wclear(game->next_block_window);
+
     box(game->board_window, false, false);
+    box(game->next_block_window, false, false);
 
     for(int i = 0; i < game->board->height; i++)
     {
@@ -87,6 +95,16 @@ void draw_board(struct NcursesGame *game)
                 mvwaddch(game->board_window, i + 1, j + 1, ch);
             }
         }
+    }
+
+    struct Block *next_block = game->board->next_block;
+    for (int i = 0; i < next_block->matrix->col_size; i++)
+    {
+      for(int j = 0; j < next_block->matrix->row_size; j++)
+      {
+          int ch = ' ' | COLOR_PAIR(next_block->matrix->values[i][j] ? next_block->color : NONE);
+          mvwaddch(game->next_block_window, i + 1, j + 2, ch);
+      }
     }
 }
 
@@ -100,7 +118,7 @@ void free_game(struct NcursesGame *game)
 
 bool route(struct NcursesGame *game, int ch)
 {
-    if (ch == 'q')
+    if (ch == 'q' || game->board->is_game_over)
     {
         free_game(game);
         endwin();
@@ -124,10 +142,6 @@ int main(int argc, char *argv[])
 {
     init_ncurses();
     struct NcursesGame *game = init_game();
-    for(int i = 0; i < 10; i++)
-    {
-        next_move(game->board);
-    }
 
     struct timeval prev, now;
     int diff;
@@ -144,13 +158,6 @@ int main(int argc, char *argv[])
           next_move(game->board);
           gettimeofday(&prev, NULL);
       }
-
-      // draw end screen if the game's over, otherwise draw our board (unless paused)
-      /*if ((game.ended = istopped())) {
-        drawend();
-      } else 
-        if (!game.paused) {
-        addscore(clrcols())*/
 
       draw_board(game);
 
