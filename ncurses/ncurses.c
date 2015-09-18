@@ -7,9 +7,9 @@
 #include <unistd.h>
 
 #include "model.h"
+#include "board.h"
 #include "matrix_file.h"
 #include "boilerplate.h"
-#include "board.h"
 
 #define STEP 1000
 #define BOARD_TOP      ((LINES-BOARD_HEIGHT)/2)

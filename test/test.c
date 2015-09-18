@@ -1,12 +1,12 @@
 #include <stdbool.h>
 
 #include "greatest.h"
-#include "../block.h"
-#include "../block_list.h"
-#include "../matrix_file.h"
-#include "../boilerplate.h"
-#include "../model.h"
-#include "../board.h"
+#include "block.h"
+#include "block_list.h"
+#include "matrix_file.h"
+#include "boilerplate.h"
+#include "model.h"
+#include "board.h"
 
 int check_matrix_equals(struct Matrix *matrix, struct Matrix *tested_matrix)
 {
