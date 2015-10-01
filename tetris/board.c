@@ -14,7 +14,7 @@ void set_default_values(struct Board *board)
 {
     board->next_block = get_random_block(board->default_blocks);
 
-    board->current_block_x = (board->width / 2) - (board->current_block->matrix->col_size / 2);
+    board->current_block_x = (board->width / 2) - (board->current_block->col_size / 2);
 
     board->current_block_y = -1;
 }
@@ -87,7 +87,7 @@ bool check_lines(struct Board *board)
 
 void prepare_next_block(struct Board * board)
 {
-    while(check_lines(board));
+    check_lines(board);
     free_block(board->current_block);
     board->current_block = board->next_block;
     set_default_values(board);
@@ -95,13 +95,13 @@ void prepare_next_block(struct Board * board)
 
 void erase_current_block(struct Board *board)
 {
-    for (int i = board->current_block_y, k = board->current_block->matrix->row_size - 1; i > board->current_block_y - board->current_block->matrix->row_size; i--, k--)
+    for (int i = board->current_block_y, k = board->current_block->row_size - 1; i > board->current_block_y - board->current_block->row_size; i--, k--)
     {
-        for (int j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
+        for (int j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->col_size; j++, m++)
         {
             if(i < board->height && i >= 0)
             {
-                if(board->current_block->matrix->values[k][m])
+                if(board->current_block->values[k][m])
                     board->visited[i][j] = NONE;
             }
         }
@@ -110,13 +110,13 @@ void erase_current_block(struct Board *board)
 
 void print_current_block(struct Board *board, int index)
 {
-    for (int i = index, k = board->current_block->matrix->row_size - 1; i > index - board->current_block->matrix->row_size; i--, k--)
+    for (int i = index, k = board->current_block->row_size - 1; i > index - board->current_block->row_size; i--, k--)
     {
-        for (int j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->matrix->col_size; j++, m++)
+        for (int j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->col_size; j++, m++)
         {
             if (i < board->height && i >= 0)
             {
-                if(board->current_block->matrix->values[k][m])
+                if(board->current_block->values[k][m])
                 {
                     board->visited[i][j] = board->current_block->color;
                 }
@@ -127,23 +127,23 @@ void print_current_block(struct Board *board, int index)
 
 bool block_fits(struct Board *board, int new_x, int new_y)
 {
-    for (int i = new_y, k = board->current_block->matrix->row_size - 1; i > new_y - board->current_block->matrix->row_size; i--, k--)
+    for (int i = new_y, k = board->current_block->row_size - 1; i > new_y - board->current_block->row_size; i--, k--)
     {
-        for (int j = new_x, m = 0; j < board->current_block->matrix->col_size + new_x; j++, m++)
+        for (int j = new_x, m = 0; j < board->current_block->col_size + new_x; j++, m++)
         {
-            if(i >= board->height && board->current_block->matrix->values[k][m] == true)
+            if(i >= board->height && board->current_block->values[k][m] != NONE)
             {
                 return false;
             }
 
-            if((j < 0 || j >= board->width) && board->current_block->matrix->values[k][m] == true)
+            if((j < 0 || j >= board->width) && board->current_block->values[k][m] != NONE)
             {
                 return false;
             }
 
             if (i < board->height && i >= 0)
             {
-                if (board->visited[i][j] != NONE && board->current_block->matrix->values[k][m] == true)
+                if (board->visited[i][j] != NONE && board->current_block->values[k][m] != NONE)
                 {
                     return false;
                 }
@@ -171,11 +171,11 @@ void move_block(struct Board *board, bool left)
 
 bool game_over(struct Board *board, bool fits)
 {
-    for (int i = board->current_block_y, k = board->current_block->matrix->row_size - 1; i > board->current_block_y - board->current_block->matrix->row_size; i--, k--)
+    for (int i = board->current_block_y, k = board->current_block->row_size - 1; i > board->current_block_y - board->current_block->row_size; i--, k--)
     {
-        for (int j = board->current_block_x, m = 0; j < board->current_block->matrix->col_size + board->current_block_x; j++, m++)
+        for (int j = board->current_block_x, m = 0; j < board->current_block->col_size + board->current_block_x; j++, m++)
         {
-            if(i < 0 && !fits && board->current_block->matrix->values[k][m] == true)
+            if(i < 0 && !fits && board->current_block->values[k][m] != NONE)
             {
                 return true;
             }
@@ -237,7 +237,6 @@ bool next_move(struct Board *board)
     }
     print_current_block(board, new_y);
     board->current_block_y = new_y;
-
     return true;
 }
 

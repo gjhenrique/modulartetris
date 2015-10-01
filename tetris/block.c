@@ -7,65 +7,62 @@
 #include "block_list.h"
 #include "boilerplate.h"
 
-struct Matrix *transpose_matrix(struct Matrix *matrix)
+struct Block *transpose_block(struct Block *block)
 {
-    struct Matrix *transposed_matrix = create_matrix(matrix->col_size, matrix->row_size);
+    struct Block *transposed_block = create_block(block->col_size, block->row_size);
 
-    for (int i = 0; i < transposed_matrix->row_size; i++)
+    for (int i = 0; i < transposed_block->row_size; i++)
     {
-        for (int j = 0; j < transposed_matrix->col_size; j++)
+        for (int j = 0; j < transposed_block->col_size; j++)
         {
-            transposed_matrix->values[i][j] = matrix->values[j][i];
+            transposed_block->values[i][j] = block->values[j][i];
         }
     }
 
-    return transposed_matrix;
+    return transposed_block;
 }
 
-struct Matrix *rotate_matrix_clockwise(struct Matrix *matrix)
+struct Block *rotate_block_clockwise(struct Block *block)
 {
-    struct Matrix *rotated_matrix = create_matrix(matrix->row_size, matrix->col_size);
+    struct Block *rotated_block = create_block(block->row_size, block->col_size);
 
-    for (int i = 0 ; i < matrix->row_size; i++)
+    for (int i = 0 ; i < block->row_size; i++)
     {
-        for (int j = 0, k = matrix->col_size - 1; j < matrix->col_size; j++, k--)
+        for (int j = 0, k = block->col_size - 1; j < block->col_size; j++, k--)
         {
-            rotated_matrix->values[i][j] = matrix->values[i][k];
+            rotated_block->values[i][j] = block->values[i][k];
         }
     }
 
-    return rotated_matrix;
+    return rotated_block;
 }
 
-struct Matrix *rotate_matrix_anticlockwise(struct Matrix *matrix)
+struct Block *rotate_block_anticlockwise(struct Block *block)
 {
-    struct Matrix *rotated_matrix = create_matrix(matrix->row_size, matrix->col_size);
+    struct Block *rotated_block = create_block(block->row_size, block->col_size);
 
-    for (int i = 0, k = matrix->row_size - 1; i < matrix->row_size; i++, k--)
+    for (int i = 0, k = block->row_size - 1; i < block->row_size; i++, k--)
     {
-        for (int j = 0; j < matrix->col_size; j++)
+        for (int j = 0; j < block->col_size; j++)
         {
-            rotated_matrix->values[i][j] = matrix->values[k][j];
+            rotated_block->values[i][j] = block->values[k][j];
         }
     }
 
-    return rotated_matrix;
+    return rotated_block;
 }
 
 // Algorithm taken from http://stackoverflow.com/questions/42519/how-do-you-rotate-a-two-dimensional-array
 struct Block *rotate_block(struct Block *block, bool clockwise)
 {
-    struct Matrix *transposed_matrix = transpose_matrix(block->matrix);
+    struct Block *transposed_block = transpose_block(block);
 
-    struct Matrix *rotated_matrix = (clockwise) ? rotate_matrix_clockwise(transposed_matrix) : rotate_matrix_anticlockwise(transposed_matrix);
+    struct Block *rotated_block = (clockwise) ? rotate_block_clockwise(transposed_block) : rotate_block_anticlockwise(transposed_block);
 
-    free_matrix(transposed_matrix);
+    free_block(transposed_block);
+    rotated_block->color = block->color;
 
-    struct Block *new_block = malloc(sizeof(struct Block));
-    new_block->color = block->color;
-    new_block->matrix = rotated_matrix;
-
-    return new_block;
+    return rotated_block;
 }
 
 struct Block *get_random_block(struct BlockList *block_list)

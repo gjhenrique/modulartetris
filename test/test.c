@@ -8,14 +8,15 @@
 #include "model.h"
 #include "board.h"
 
-int check_matrix_equals(struct Matrix *matrix, struct Matrix *tested_matrix)
+int check_block_equals(struct Block *block, struct Block *tested_block)
 {
-    for (int i = 0; i < matrix->row_size; ++i)
+    for (int i = 0; i < block->row_size; ++i)
     {
-        for (int j = 0; j < matrix->col_size; ++j)
+        for (int j = 0; j < block->col_size; ++j)
         {
-            if (matrix->values[i][j] != tested_matrix->values[i][j])
+            if ((bool)block->values[i][j] != (bool)tested_block->values[i][j]) 
             {
+                printf("%d %d\n", block->values[i][j], tested_block->values[i][j]);
                 return false;
             }
         }
@@ -39,22 +40,22 @@ int check_board_equals(struct Board *board, bool tested_board[board->width][boar
 
 int assert_blocks_rotation(struct Block *block, struct BlockList *block_list)
 {
-    ASSERTm("Normal", check_matrix_equals(block->matrix, get(block_list, 0)->matrix));
+    ASSERTm("Normal", check_block_equals(block, get(block_list, 0)));
 
     block = rotate_block(block, 1);
-    ASSERTm("1 clock", check_matrix_equals(block->matrix, get(block_list, 1)->matrix));
+    ASSERTm("1 clock", check_block_equals(block, get(block_list, 1)));
 
     block = rotate_block(block, 1);
-    ASSERTm("2 clock", check_matrix_equals(block->matrix, get(block_list, 3)->matrix));
+    ASSERTm("2 clock", check_block_equals(block, get(block_list, 3)));
 
     block = rotate_block(block, 1);
-    ASSERTm("3 clock", check_matrix_equals(block->matrix, get(block_list, 2)->matrix));
+    ASSERTm("3 clock", check_block_equals(block, get(block_list, 2)));
 
     block = rotate_block(block, 1);
-    ASSERTm("4 clock", check_matrix_equals(block->matrix, get(block_list, 0)->matrix));
+    ASSERTm("4 clock", check_block_equals(block, get(block_list, 0)));
 
     block = rotate_block(block, 0);
-    ASSERTm("1 anticlock", check_matrix_equals(block->matrix, get(block_list, 2)->matrix));
+    ASSERTm("1 anticlock", check_block_equals(block, get(block_list, 2)));
     PASS();
 }
 

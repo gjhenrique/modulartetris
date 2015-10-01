@@ -7,15 +7,11 @@
 
 int to_digit(char c);
 
-void print_matrix(struct Matrix *matrix);
+void print_block(struct Block *block);
 
 void print_board(struct Board *board);
 
-bool **malloc_matrix(int row_size, int col_size);
-
-struct Matrix *create_matrix(int row_size, int col_size);
-
-void free_matrix(struct Matrix *matrix);
+struct Block *create_block(int row_size, int col_size);
 
 void free_block(struct Block *block);
 
@@ -23,9 +19,9 @@ void free_board(struct Board *board);
 
 void free_list(struct BlockList* block_list);
 
-struct Block *clone_block(struct Block *matrix);
+struct Block *clone_block(struct Block *block);
 
-struct Matrix *clone_matrix(struct Matrix *matrix);
+struct Block *clone_block(struct Block *block);
 
 enum Color **malloc_collor_matrix(int width, int height);
 

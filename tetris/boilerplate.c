@@ -11,13 +11,13 @@ int to_digit(char c)
     return c - '0';
 }
 
-void print_matrix(struct Matrix *matrix)
+void print_matrix(struct Block *block)
 {
-    for (int i = 0; i < matrix->row_size; ++i)
+    for (int i = 0; i < block->row_size; ++i)
     {
-        for (int j = 0; j < matrix->col_size; ++j)
+        for (int j = 0; j < block->col_size; ++j)
         {
-         printf("%d\t", matrix->values[i][j]);
+         printf("%d\t", block->values[i][j]);
         }
         printf("\n");
     }
@@ -39,48 +39,24 @@ void print_board(struct Board *board)
     printf("\n\n");
 }
 
-struct Matrix *create_matrix(int row_size, int col_size) {
+struct Block *create_block(int row_size, int col_size) {
 
-    struct Matrix* matrix = malloc(sizeof(struct Matrix));
+    struct Block* block = malloc(sizeof(struct Block));
 
-    matrix->col_size = col_size;
-    matrix->row_size = row_size;
-    matrix->values = malloc_matrix(row_size, col_size);
+    block->col_size = col_size;
+    block->row_size = row_size;
+    block->values = malloc_collor_matrix(row_size, col_size);
 
-    return  matrix;
-}
-
-bool **malloc_matrix(int row_size, int col_size)
-{
-    bool **matrix = malloc(row_size * (sizeof(bool*)));
-
-    for (int i = 0; i < row_size; i++)
-        matrix[i] = malloc(col_size * sizeof(bool));
-
-    for (int i = 0; i < row_size; i++)
-    {
-        for (int j = 0; j < col_size; j++)
-        {
-            matrix[i][j] = 0;
-        }
-    }
-
-    return matrix;
-}
-
-void free_matrix(struct Matrix *matrix)
-{
-    for(int i = 0; i < matrix->row_size; i++) {
-        free(matrix->values[i]);
-    }
-
-    free(matrix->values);
-    free(matrix);
+    return  block;
 }
 
 void free_block(struct Block *block)
 {
-    free_matrix(block->matrix);
+    for(int i = 0; i < block->row_size; i++) {
+        free(block->values[i]);
+    }
+
+    free(block->values);
     free(block);
 }
 
@@ -121,25 +97,18 @@ void free_list(struct BlockList* block_list)
 
 struct Block *clone_block(struct Block *block)
 {
-    struct Block *new_block = malloc(sizeof(struct Block));
-    new_block->color = block->color;
-    new_block->matrix = clone_matrix(block->matrix);
+    struct Block *new_block = create_block(block->row_size, block->col_size);
 
-    return new_block;
-}
-
-struct Matrix *clone_matrix(struct Matrix *matrix)
-{
-    struct Matrix *new_matrix = create_matrix(matrix->row_size, matrix->col_size);
-
-    for (int i = 0 ; i < matrix->row_size; i++)
+    for (int i = 0 ; i < block->row_size; i++)
     {
-        for (int j = 0; j < matrix->col_size; j++)
+        for (int j = 0; j < block->col_size; j++)
         {
-            new_matrix->values[i][j] = matrix->values[i][j];
+            new_block->values[i][j] = block->values[i][j];
         }
     }
-    return new_matrix;
+
+    new_block->color = block->color;
+    return new_block;
 }
 
 enum Color **malloc_collor_matrix(int width, int height)

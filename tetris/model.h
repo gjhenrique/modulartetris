@@ -3,13 +3,6 @@
 
 #include <stdbool.h>
 
-struct Matrix
-{
-    bool **values;
-    int col_size;
-    int row_size;
-};
-
 enum Color
 {
     NONE, RED, BLUE, GREEN, YELLOW, PINK, PURPLE, ORANGE
@@ -17,7 +10,9 @@ enum Color
 
 struct Block
 {
-    struct Matrix *matrix;
+    enum Color **values;
+    int col_size;
+    int row_size;
     enum Color color;
 };
 

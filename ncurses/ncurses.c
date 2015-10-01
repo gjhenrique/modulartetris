@@ -98,11 +98,11 @@ void draw_board(struct NcursesGame *game)
     }
 
     struct Block *next_block = game->board->next_block;
-    for (int i = 0; i < next_block->matrix->col_size; i++)
+    for (int i = 0; i < next_block->col_size; i++)
     {
-      for(int j = 0; j < next_block->matrix->row_size; j++)
+      for(int j = 0; j < next_block->row_size; j++)
       {
-          int ch = ' ' | COLOR_PAIR(next_block->matrix->values[i][j] ? next_block->color : NONE);
+          int ch = ' ' | COLOR_PAIR(next_block->values[i][j] ? next_block->color : NONE);
           mvwaddch(game->next_block_window, i + 1, j + 2, ch);
       }
     }
