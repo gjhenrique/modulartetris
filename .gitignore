@@ -48,3 +48,7 @@ cscope*
 
 # Main files
 main
+
+# Android Stduio
+.idea
+*.iml
