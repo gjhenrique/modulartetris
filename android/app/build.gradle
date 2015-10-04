@@ -24,7 +24,8 @@ model {
         CFlags += "-I${file("../../tetris")}".toString()
     }
     android.sources {
-        main.jni.source.srcDirs += ['../../tetris', 'src/main/jni']
+        main.jni.source.srcDirs += ['../../tetris', 'src/main/swig']
+        main.java.source.srcDirs += ['src/main/swig', 'src/main/java']
     }
     android.buildTypes {
         release {

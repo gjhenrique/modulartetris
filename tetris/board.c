@@ -184,6 +184,16 @@ void move_block(struct Board *board, bool left)
     print_current_block(board, board->current_block_y, board->current_block->color);
 }
 
+void move_to_left(struct Board *board)
+{
+    move_block(board, true);
+}
+
+void move_to_right(struct Board *board)
+{
+    move_block(board, false);
+}
+
 bool game_over(struct Board *board, bool fits)
 {
     for (int i = board->current_block_y, k = board->current_block->row_size - 1; i > board->current_block_y - board->current_block->row_size; i--, k--)
@@ -228,6 +238,16 @@ bool rotate(struct Board *board, bool clockwise)
     return fits;
 }
 
+void rotate_clockwise(struct Board *board)
+{
+    rotate(board, true);
+}
+
+void rotate_anticlockwise(struct Board *board)
+{
+    rotate(board, false);
+}
+
 bool next_move(struct Board *board)
 {
     int new_y = board->current_block_y + 1;
@@ -263,3 +283,7 @@ bool next_move(struct Board *board)
     return true;
 }
 
+void move_to_bottom(struct Board *board)
+{
+    while(next_move(board)) { }
+}

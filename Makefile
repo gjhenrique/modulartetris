@@ -13,7 +13,7 @@ TEST_SRC=test/test.c
 NCURSES_FLAGS=-lncurses -lpanel -Itetris
 NCURSES_SRC=ncurses/ncurses.c
 
-all: $(TETRIS_LIB_NAME) tetris_c test
+all: $(TETRIS_LIB_NAME) tetris_c test android_swig
 
 build_lib $(TETRIS_LIB_NAME): $(TETRIS_SRC)
 	$(CC) $(LDFLAGS) $(LIBFLAGS) -o $(TETRIS_LIB_NAME) $(TETRIS_SRC) $(CFLAGS)
@@ -24,8 +24,11 @@ tetris_c: $(TETRIS_LIB_NAME) $(NCURSES_SRC)
 run_test: $(TETRIS_LIB_NAME) $(TEST_SRC)
 	$(CC) $(TEST_SRC) -l$(TETRIS_LIB) -L. $(CFLAGS) -Itetris -o run_test
 
+android_swig: $(TETRIS_LIB_NAME)
+	swig  -java -verbose -package br.com.gjhenrique.modulartetris -o android/app/src/main/swig/modulartetris_wrapper.c -outdir android/app/src/main/swig/br/com/gjhenrique/modulartetris tetris/modular_tetris.i
+
 clean:
 	rm -f $(TETRIS_LIB_NAME) run_test tetris_c
 
 .PHONY:
-	build_lib
+	build_lib android_swig

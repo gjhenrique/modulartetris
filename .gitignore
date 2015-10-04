@@ -46,9 +46,6 @@ cscope*
 # YouCompleteMe
 .ycm_extra_conf.py*
 
-# Main files
-main
-
 # Android Stduio
 .idea
 *.iml

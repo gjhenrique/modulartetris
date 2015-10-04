@@ -1,50 +1,30 @@
 package br.com.gjhenrique.modulartetris;
 
+// Board.java already exists in swig generation
+public interface Board {
 
-import android.graphics.Color;
-import android.graphics.Rect;
+    public boolean isGameOver();
 
-public class Board {
+    public void nextMove();
 
-    // WARNING: This enum must reflect the values os C Color Enum from the model.h file
-    public enum Color {
-        NONE(android.graphics.Color.WHITE), RED(android.graphics.Color.RED), BLUE(android.graphics.Color.BLUE), GREEN(android.graphics.Color.GREEN),
-        YELLOW(android.graphics.Color.YELLOW), PINK(android.graphics.Color.parseColor("#FFC0CB")),
-        PURPLE(android.graphics.Color.parseColor("#800080")), ORANGE(android.graphics.Color.parseColor("#FFA500"));
+    public void moveToLeft();
 
-        private int color;
+    public void moveToRight();
 
-        private Color(int color) {
-            this.color = color;
-        }
+    public void rotateClockwise();
 
-        public int getColor() {
-            return this.color;
-        }
-    }
+    public void moveToBottom();
 
-    public int height;
-    public int width;
+    public Color getBoardValuesIndex(int col, int row);
 
-    public boolean isGameOver;
+    public int getBoardHeight();
 
-    public Color[][] currentBlock;
+    public int getBoardWidth();
 
-    public Color[][] boardValues;
+    public Color getNextBlockIndex(int col, int row);
 
-    public Board(int width, int height) {
-        this.width = width;
-        this.height = height;
-        this.boardValues = new Color[this.height][this.width];
-    }
+    public int getNextBlockHeight();
 
-    public native void nextMove();
+    public int getNextBlockWidth();
 
-    public native void rotateClockwise();
-
-    public native void moveToLeft();
-
-    public native void moveToRight();
-
-    public native void moveToBottom();
 }

@@ -6,28 +6,29 @@ import android.view.MotionEvent;
 import android.view.View;
 
 
-public class SwipeListener implements View.OnTouchListener {
+public abstract class TetrisGestureListener implements View.OnTouchListener {
 
-    private final float height;
-    private final float width;
+    public final static String TAG = "TetrisGestureListener";
+
     private boolean isSrolling = false;
 
-    public final static String TAG = "SwipeListener";
+    private TetrisPanel tetrisPanel;
 
-    private Board board;
-    private TetrisView tetrisView;
-
-    public Context context;
     public GestureDetector gestureDetector;
 
-    public SwipeListener(Context ctx, TetrisView view, Board board, float width, float height) {
-        context = ctx;
-        this.board = board;
-        this.tetrisView = view;
-        gestureDetector = new GestureDetector(ctx, new GestureListener());
+    public abstract void moveBlockLeft();
 
-        this.width = width;
-        this.height = height;
+    public abstract void moveBlockRight();
+
+    public abstract void rotateBlock();
+
+    public abstract void moveToBottom();
+
+    public abstract void pauseGame();
+
+    public TetrisGestureListener(Context ctx, TetrisPanel tetrisPanel) {
+        gestureDetector = new GestureDetector(ctx, new GestureListener());
+        this.tetrisPanel = tetrisPanel;
     }
 
     @Override
@@ -42,7 +43,6 @@ public class SwipeListener implements View.OnTouchListener {
     private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         private float initialX;
-        private float initialY;
         private final int MAX_VELOCITY = 1000;
 
         @Override
@@ -60,19 +60,17 @@ public class SwipeListener implements View.OnTouchListener {
 
             float d = Math.abs(e2.getX() - initialX);
 
-            if (d > width) {
+            if (d > tetrisPanel.getBlockWidth()) {
 
-                int times = (int) (d / width);
+                int times = (int) (d / tetrisPanel.getBlockWidth());
 
                 for (int i = 0; i <  times; i++) {
                     if (e2.getX() < initialX)
-                        board.moveToLeft();
+                        moveBlockLeft();
                     else
-                        board.moveToRight();
+                        moveBlockRight();
                 }
-
                 initialX = e2.getX();
-                tetrisView.drawBoard();
             }
 
             return false;
@@ -82,8 +80,7 @@ public class SwipeListener implements View.OnTouchListener {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
             if (e2.getY() > e1.getY() && velocityY > MAX_VELOCITY) {
-                board.moveToBottom();
-                tetrisView.drawBoard();
+                moveToBottom();
             }
 
             return false;
@@ -91,9 +88,16 @@ public class SwipeListener implements View.OnTouchListener {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            SwipeListener.this.board.rotateClockwise();
-            tetrisView.drawBoard();
-            return super.onSingleTapConfirmed(e);
+
+            float x = e.getX();
+            float y = e.getY();
+
+            if (tetrisPanel.getButtonRange().contains(e.getX(), e.getY()))
+                pauseGame();
+            else
+                rotateBlock();
+
+            return false;
         }
     }
 }
