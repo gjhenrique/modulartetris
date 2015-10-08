@@ -59,7 +59,7 @@ struct BlockList *read_from_string(char blocks_string[])
         if (!(strlen(line) == 0 || line[0] == '#' || !isdigit(line[0]))) {
 
             // Jumping color NONE
-            if (color_index == NONE)
+            while (color_index == NONE || color_index == GHOST)
                 color_index++;
 
             struct Block *block = read_block(&saved_ptr, line, color_index);

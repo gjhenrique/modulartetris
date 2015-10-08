@@ -21,7 +21,7 @@ build_lib $(TETRIS_LIB_NAME): $(TETRIS_SRC)
 tetris_c: $(TETRIS_LIB_NAME) $(NCURSES_SRC)
 	$(CC) $(NCURSES_SRC) $(CFLAGS) $(NCURSES_FLAGS) -o tetris_c -l$(TETRIS_LIB) -L.
 
-run_test: $(TETRIS_LIB_NAME)
+run_test: $(TETRIS_LIB_NAME) $(TEST_SRC)
 	$(CC) $(TEST_SRC) -l$(TETRIS_LIB) -L. $(CFLAGS) -Itetris -o run_test
 
 clean:

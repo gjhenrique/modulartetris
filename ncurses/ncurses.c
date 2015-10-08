@@ -42,6 +42,7 @@ void init_ncurses()
     if(has_colors())
     {
         start_color();
+        init_pair(GHOST, COLOR_WHITE, COLOR_WHITE);
         init_pair(RED, COLOR_RED, COLOR_RED);
         init_pair(BLUE, COLOR_BLUE, COLOR_BLUE);
         init_pair(GREEN, COLOR_GREEN, COLOR_GREEN);

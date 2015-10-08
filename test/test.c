@@ -212,8 +212,8 @@ TEST test_clear_line(void)
 
 TEST test_blocks_direction(void)
 {
-    bool left_board[5][5] = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {1, 1, 1, 1, 0}, {0, 0, 0, 0, 0}};
-    bool right_board[5][5] = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 1, 1, 1, 1}, {0, 0, 0, 0, 0}};
+    bool left_board[5][5] = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {2, 2, 2, 2, 0}, {1, 1, 1, 1, 0}};
+    bool right_board[5][5] = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 2, 2, 2, 2}, {0, 1, 1, 1, 1}};
 
     char square_block[] = "4\n0 0 0 0\n1 1 1 1\n0 0 0 0\n0 0 0 0";
     struct BlockList *block_list = read_from_string(square_block);
@@ -229,14 +229,13 @@ TEST test_blocks_direction(void)
     {
         move_to_left(board);
     }
-    ASSERT(check_board_equals(board, left_board));
 
+    ASSERT(check_board_equals(board, left_board));
     for(int i = 0; i < 50; i++)
     {
         move_to_right(board);
     }
     ASSERT(check_board_equals(board, right_board));
-
     free_board(board);
     PASS();
 }
@@ -270,10 +269,10 @@ TEST test_game_over(void)
 TEST test_board_rotation(void)
 {
 
-    bool anticlock_rotation_board[5][5] = {{0, 1, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 0, 0, 0}};
-    bool clock_rotation_board[5][5] = {{0, 0, 1, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 0, 0}};
-    bool left_rotation_board[5][5] = {{1, 0, 0, 0, 0}, {1, 0, 0, 0, 0}, {1, 0, 0, 0, 0}, {1, 0, 0, 0, 0}, {0, 0, 0, 0, 0}};
-    bool two_rotation_board[5][5] = {{0, 1, 0, 0, 0}, {1, 1, 0, 0, 0}, {1, 1, 0, 0, 0}, {1, 1, 0, 0, 0}, {1, 0, 0, 0, 0}};
+    bool anticlock_rotation_board[5][5] = {{0, 2, 0, 0, 0}, {0, 2, 0, 0, 0}, {0, 2, 0, 0, 0}, {0, 2, 0, 0, 0}, {0, 1, 0, 0, 0}};
+    bool clock_rotation_board[5][5] = {{0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 2, 0, 0}, {0, 0, 1, 0, 0}};
+    bool left_rotation_board[5][5] = {{2, 0, 0, 0, 0}, {2, 0, 0, 0, 0}, {2, 0, 0, 0, 0}, {2, 0, 0, 0, 0}, {1, 0, 0, 0, 0}};
+    bool two_rotation_board[5][5] = {{0, 2, 0, 0, 0}, {2, 2, 0, 0, 0}, {2, 2, 0, 0, 0}, {2, 2, 0, 0, 0}, {2, 1, 0, 0, 0}};
 
     char square_block[] = "4\n0 0 0 0\n1 1 1 1\n0 0 0 0\n0 0 0 0";
     struct BlockList *block_list = read_from_string(square_block);

@@ -5,7 +5,7 @@
 
 enum Color
 {
-    NONE, RED, BLUE, GREEN, YELLOW, PINK, PURPLE, ORANGE
+    NONE, GHOST, RED, BLUE, GREEN, YELLOW, PINK, PURPLE, ORANGE
 };
 
 struct Block
@@ -23,6 +23,8 @@ struct Board
 
     int current_block_x;
     int current_block_y;
+
+    int ghost_block_y;
 
     // Pointer to Block
     struct Block *current_block;
