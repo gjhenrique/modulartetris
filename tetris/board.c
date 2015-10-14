@@ -48,13 +48,13 @@ struct Board *create_board(int width, int height, struct BlockList *blockList)
 
 void replace_lines(struct Board *board, int row)
 {
-    for(int i = 0; i < board->width; i++)
+    for (int i = 0; i < board->width; i++)
     {
-        for(int j = row - 1; j >=0; j--)
+        for (int j = row - 1; j >= 0; j--)
         {
-                int tmp = board->visited[j][i];
-                board->visited[j][i] = board->visited[j][i];
-                board->visited[j+1][i] = tmp;
+            enum Color tmp = board->visited[j][i];
+            board->visited[j][i] = NONE;
+            board->visited[j+1][i] = tmp;
         }
     }
 }
@@ -68,21 +68,18 @@ bool is_empty_line(struct Board *board, int line)
             return true;
         }
     }
-
     return false;
 }
 
-bool check_lines(struct Board *board)
+void check_lines(struct Board *board)
 {
     for (int i = 0; i < board->height; i++)
     {
         if(!is_empty_line(board, i))
         {
             replace_lines(board, i);
-            return true;
         }
     }
-    return false;
 }
 
 void prepare_next_block(struct Board * board)
@@ -99,7 +96,7 @@ void erase_current_block(struct Board *board)
     {
         for (int j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->col_size; j++, m++)
         {
-            if(i < board->height && i >= 0)
+            if (i < board->height && i >= 0)
             {
                 if(board->current_block->values[k][m])
                     board->visited[i][j] = NONE;
