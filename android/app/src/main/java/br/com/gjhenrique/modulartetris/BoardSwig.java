@@ -88,8 +88,7 @@ public class BoardSwig implements Board {
     }
 
     public static Board createBoard(int width, int height, String boardLayout) {
-        SWIGTYPE_p_BlockList p = modular_tetris.read_from_string(boardLayout);
-        BoardSwigWrap boardSwigWrap = modular_tetris.create_board(width, height, p);
+        BoardSwigWrap boardSwigWrap = modular_tetris.create_board_string(width, height, boardLayout);
         return new BoardSwig(boardSwigWrap);
     }
 }

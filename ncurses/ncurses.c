@@ -62,8 +62,7 @@ void init_ncurses()
 struct NcursesGame *init_game()
 {
     struct NcursesGame *game = malloc(sizeof(struct NcursesGame));
-    struct BlockList *blockList = read_from_file("default_blocks");
-    struct Board *board = create_board(BOARD_WIDTH, BOARD_HEIGHT, blockList);
+    struct Board *board = create_board_file(BOARD_WIDTH, BOARD_HEIGHT, "default_blocks");
 
     game->board_window = newwin(board->height + 2, board->width + 2, BOARD_TOP, BOARD_LEFT);
     game->next_block_window = newwin(HOLD_HEIGHT + 2, HOLD_WIDTH + 2, BOARD_TOP, BOARD_LEFT + BOARD_WIDTH + 2);

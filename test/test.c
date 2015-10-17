@@ -190,9 +190,8 @@ TEST test_clear_line(void)
     bool board_empty[4][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
 
     char straight_block[] = "4\n0 0 0 0\n1 1 1 1\n0 0 0 0\n0 0 0 0";
-    struct BlockList *block_list = read_from_string(straight_block);
 
-    struct Board *board = create_board(4, 4, block_list);
+    struct Board *board = create_board_string(4, 4, straight_block);
 
     move_to_bottom(board);
     ASSERT(check_board_equals(board, board_empty));
@@ -216,9 +215,7 @@ TEST test_blocks_direction(void)
     bool right_board[5][5] = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 2, 2, 2, 2}, {0, 1, 1, 1, 1}};
 
     char square_block[] = "4\n0 0 0 0\n1 1 1 1\n0 0 0 0\n0 0 0 0";
-    struct BlockList *block_list = read_from_string(square_block);
-
-    struct Board *board = create_board(5, 5, block_list);
+    struct Board *board = create_board_string(5, 5, square_block);
 
     for(int i = 0; i < 6; i++)
     {
@@ -243,9 +240,7 @@ TEST test_blocks_direction(void)
 TEST test_game_over(void)
 {
     char square_block[] = "4\n0 0 0 0\n1 1 1 1\n0 0 0 0\n0 0 0 0";
-    struct BlockList *block_list = read_from_string(square_block);
-
-    struct Board *board = create_board(5, 5, block_list);
+    struct Board *board = create_board_string(5, 5, square_block);
 
     move_to_bottom(board);
     move_to_bottom(board);
@@ -275,9 +270,7 @@ TEST test_board_rotation(void)
     bool two_rotation_board[5][5] = {{0, 2, 0, 0, 0}, {2, 2, 0, 0, 0}, {2, 2, 0, 0, 0}, {2, 2, 0, 0, 0}, {2, 1, 0, 0, 0}};
 
     char square_block[] = "4\n0 0 0 0\n1 1 1 1\n0 0 0 0\n0 0 0 0";
-    struct BlockList *block_list = read_from_string(square_block);
-
-    struct Board *board = create_board(5, 5, block_list);
+    struct Board *board = create_board_string(5, 5, square_block);
 
     for(int i = 0; i < 4; i++)
     {
@@ -315,18 +308,17 @@ TEST test_fit_blocks(void)
     bool board2[4][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
 
     char blocks[] = "3\n0 0 0\n0 0 1\n1 1 1\n2\n0 1 \n0 1\n2\n1 1\n0 0";
-    struct BlockList *block_list = read_from_string(blocks);
-    struct Board *board = create_board(4, 4, block_list);
+    struct Board *board = create_board_string(4, 4, blocks);
 
-    board->current_block = clone_block(get(block_list,0));
+    board->current_block = clone_block(get(board->default_blocks,0));
     move_to_left(board);
     move_to_bottom(board);
-    board->current_block = clone_block(get(block_list,1));
+    board->current_block = clone_block(get(board->default_blocks,1));
     move_to_right(board);
     move_to_bottom(board);
     ASSERT(check_board_equals(board, board1));
 
-    board->current_block = clone_block(get(block_list,2));
+    board->current_block = clone_block(get(board->default_blocks,2));
     move_to_left(board);
     move_to_bottom(board);
     ASSERT(check_board_equals(board, board2));

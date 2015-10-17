@@ -45,6 +45,18 @@ struct Board *create_board(int width, int height, struct BlockList *blockList)
     return board;
 }
 
+struct Board *create_board_file(int width, int height, char *file_name)
+{
+    struct BlockList *block_list = read_from_file(file_name);
+    return create_board(width, height, block_list);
+}
+
+struct Board *create_board_string(int width, int height, char *board_string)
+{
+    struct BlockList *block_list = read_from_string(board_string);
+    return create_board(width, height, block_list);
+}
+
 bool is_empty_space(enum Color color)
 {
   return color == NONE || color == GHOST;

@@ -3,7 +3,6 @@
 %inline %{
 #include "model.h"
 #include "board.h"
-#include "matrix_file.h"
 #include "boilerplate.h"
 
 enum Color getColorValue(enum Color **color, int col, int row) {
@@ -18,7 +17,6 @@ enum Color getColorValue(enum Color **color, int col, int row) {
 %rename Color ColorSwigWrap;
 #endif
 
-%include "../tetris/matrix_file.h"
 %include "../tetris/model.h"
 %include "../tetris/board.h"
 extern void free_board(struct Board *board);

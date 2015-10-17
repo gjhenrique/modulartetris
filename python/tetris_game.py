@@ -25,8 +25,7 @@ pygame.init()
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 
-block_list = modular_tetris.read_from_file("default_blocks");
-board = modular_tetris.create_board(TETRIS_WIDTH, TETRIS_HEIGHT, block_list)
+board = modular_tetris.create_board_file(TETRIS_WIDTH, TETRIS_HEIGHT, "default_blocks")
 
 color_dict = {modular_tetris.NONE: (255, 255, 255),
               modular_tetris.GHOST: (128, 128, 128),
