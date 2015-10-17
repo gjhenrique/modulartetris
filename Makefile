@@ -1,6 +1,7 @@
 CC=gcc
 CFLAGS=-g -std=gnu99
 LIBFLAGS=-fPIC -shared -Wl,-soname,$(TETRIS_LIB_NAME)
+ENVFLAGS=-L. -Wl,-rpath,.
 
 TETRIS_LIB=tetris
 TETRIS_LIB_NAME=lib$(TETRIS_LIB).so
@@ -21,10 +22,10 @@ build_lib $(TETRIS_LIB_NAME): $(TETRIS_SRC)
 	$(CC) $(LDFLAGS) $(LIBFLAGS) -o $(TETRIS_LIB_NAME) $(TETRIS_SRC) $(CFLAGS)
 
 tetris_c: $(TETRIS_LIB_NAME) $(NCURSES_SRC)
-	$(CC) $(NCURSES_SRC) $(CFLAGS) $(NCURSES_FLAGS) -o tetris_c -l$(TETRIS_LIB) -L.
+	$(CC) $(NCURSES_SRC) $(ENVFLAGS) $(CFLAGS) $(NCURSES_FLAGS) -o tetris_c -l$(TETRIS_LIB)
 
 run_test: $(TETRIS_LIB_NAME) $(TEST_SRC)
-	$(CC) $(TEST_SRC) -l$(TETRIS_LIB) -L. $(CFLAGS) -Itetris -o run_test
+	$(CC) $(TEST_SRC) $(ENVFLAGS) -l$(TETRIS_LIB) $(CFLAGS) -Itetris -o run_test
 
 android_swig: $(TETRIS_LIB_NAME)
 	swig  -java -verbose -package br.com.gjhenrique.modulartetris -o android/app/src/main/swig/modulartetris_wrapper.c -outdir android/app/src/main/swig/br/com/gjhenrique/modulartetris tetris/modular_tetris.i
