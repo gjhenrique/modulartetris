@@ -52,7 +52,7 @@ struct Block *rotate_block_anticlockwise(struct Block *block)
     return rotated_block;
 }
 
-// Algorithm taken from http://stackoverflow.com/questions/42519/how-do-you-rotate-a-two-dimensional-array
+// Algorithm from http://stackoverflow.com/questions/42519/how-do-you-rotate-a-two-dimensional-array
 struct Block *rotate_block(struct Block *block, bool clockwise)
 {
     struct Block *transposed_block = transpose_block(block);

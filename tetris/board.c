@@ -10,6 +10,14 @@
 #include "boilerplate.h"
 #include "block.h"
 
+#define BEGIN_CURRENT_BOARD_LOOP(board, x, y)                             \
+for (int i = y, k = board->current_block->row_size - 1; i > y - board->current_block->row_size; i--, k--) { \
+    for (int j = x, m = 0; j < x + board->current_block->col_size; j++, m++) {
+
+#define END_CURRENT_BOARD_LOOP \
+  }                            \
+}
+
 void set_default_values(struct Board *board)
 {
     board->next_block = get_random_block(board->default_blocks);
@@ -108,61 +116,51 @@ void prepare_next_block(struct Board * board)
 
 void erase_current_block(struct Board *board, int index)
 {
-    for (int i = index, k = board->current_block->row_size - 1; i > index - board->current_block->row_size; i--, k--)
-    {
-        for (int j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->col_size; j++, m++)
+    BEGIN_CURRENT_BOARD_LOOP(board, board->current_block_x, index)
+        if (i < board->height && i >= 0)
         {
-            if (i < board->height && i >= 0)
-            {
-                if(board->current_block->values[k][m])
-                    board->visited[i][j] = NONE;
-            }
+            if(board->current_block->values[k][m])
+                board->visited[i][j] = NONE;
         }
-    }
+    END_CURRENT_BOARD_LOOP
 }
 
-void print_current_block(struct Board *board, int index, enum Color color)
+void insert_current_block(struct Board *board, int index, enum Color color)
 {
-    for (int i = index, k = board->current_block->row_size - 1; i > index - board->current_block->row_size; i--, k--)
-    {
-        for (int j = board->current_block_x, m = 0; j < board->current_block_x + board->current_block->col_size; j++, m++)
+
+    BEGIN_CURRENT_BOARD_LOOP(board, board->current_block_x, index)
+        if (i < board->height && i >= 0)
         {
-            if (i < board->height && i >= 0)
+            if(board->current_block->values[k][m])
             {
-                if(board->current_block->values[k][m])
-                {
-                    board->visited[i][j] = color;
-                }
+                board->visited[i][j] = color;
             }
         }
-    }
+    END_CURRENT_BOARD_LOOP
 }
 
 bool block_fits(struct Board *board, int new_x, int new_y)
 {
-    for (int i = new_y, k = board->current_block->row_size - 1; i > new_y - board->current_block->row_size; i--, k--)
-    {
-        for (int j = new_x, m = 0; j < board->current_block->col_size + new_x; j++, m++)
+    BEGIN_CURRENT_BOARD_LOOP(board, new_x, new_y)
+        if(i >= board->height && board->current_block->values[k][m] != NONE)
         {
-            if(i >= board->height && board->current_block->values[k][m] != NONE)
+            return false;
+        }
+
+        if((j < 0 || j >= board->width) && board->current_block->values[k][m] != NONE)
+        {
+            return false;
+        }
+
+        if (i < board->height && i >= 0)
+        {
+            if (!is_empty_space(board->visited[i][j]) && board->current_block->values[k][m] != NONE)
             {
                 return false;
-            }
-
-            if((j < 0 || j >= board->width) && board->current_block->values[k][m] != NONE)
-            {
-                return false;
-            }
-
-            if (i < board->height && i >= 0)
-            {
-                if (!is_empty_space(board->visited[i][j]) && board->current_block->values[k][m] != NONE)
-                {
-                    return false;
-                }
             }
         }
-    }
+    END_CURRENT_BOARD_LOOP
+
     return true;
 }
 
@@ -192,8 +190,8 @@ void move_block(struct Board *board, bool left)
     }
 
     board->ghost_block_y = get_ghost_position(board, board->current_block_y);
-    print_current_block(board, board->ghost_block_y, GHOST);
-    print_current_block(board, board->current_block_y, board->current_block->color);
+    insert_current_block(board, board->ghost_block_y, GHOST);
+    insert_current_block(board, board->current_block_y, board->current_block->color);
 }
 
 void move_to_left(struct Board *board)
@@ -208,16 +206,12 @@ void move_to_right(struct Board *board)
 
 bool game_over(struct Board *board, bool fits)
 {
-    for (int i = board->current_block_y, k = board->current_block->row_size - 1; i > board->current_block_y - board->current_block->row_size; i--, k--)
-    {
-        for (int j = board->current_block_x, m = 0; j < board->current_block->col_size + board->current_block_x; j++, m++)
+    BEGIN_CURRENT_BOARD_LOOP(board, board->current_block_x, board->current_block_y)
+        if(i < 0 && !fits && !is_empty_space(board->current_block->values[k][m]))
         {
-            if(i < 0 && !fits && !is_empty_space(board->current_block->values[k][m]))
-            {
-                return true;
-            }
+            return true;
         }
-    }
+    END_CURRENT_BOARD_LOOP
 
     return false;
 }
@@ -244,8 +238,8 @@ bool rotate(struct Board *board, bool clockwise)
     }
 
     board->ghost_block_y = get_ghost_position(board, board->current_block_y);
-    print_current_block(board, board->ghost_block_y, GHOST);
-    print_current_block(board, board->current_block_y, board->current_block->color);
+    insert_current_block(board, board->ghost_block_y, GHOST);
+    insert_current_block(board, board->current_block_y, board->current_block->color);
 
     return fits;
 }
@@ -271,14 +265,14 @@ bool next_move(struct Board *board)
 
     if (game_over(board, fits))
     {
-        print_current_block(board, board->current_block_y, board->current_block->color);
+        insert_current_block(board, board->current_block_y, board->current_block->color);
         board->is_game_over = true;
         return false;
     }
 
     if(!fits)
     {
-        print_current_block(board, board->current_block_y, board->current_block->color);
+        insert_current_block(board, board->current_block_y, board->current_block->color);
         prepare_next_block(board);
         board->ghost_block_y = board->current_block_y;
 
@@ -288,8 +282,8 @@ bool next_move(struct Board *board)
     board->current_block_y = new_y;
 
     board->ghost_block_y = get_ghost_position(board, board->current_block_y);
-    print_current_block(board, board->ghost_block_y, GHOST);
-    print_current_block(board, new_y, board->current_block->color);
+    insert_current_block(board, board->ghost_block_y, GHOST);
+    insert_current_block(board, new_y, board->current_block->color);
 
 
     return true;

@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-g -std=gnu99
+CFLAGS=-g -std=gnu99 -Wall
 LIBFLAGS=-fPIC -shared -Wl,-soname,$(TETRIS_LIB_NAME)
 ENVFLAGS=-L. -Wl,-rpath,.
 

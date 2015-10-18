@@ -22,7 +22,7 @@ struct Block *populate_block(char **saved_ptr, int row_size, int col_size, int c
     for (int i = 0; i < block->row_size; ++i) {
         line = strtok_r(NULL, "\n", saved_ptr);
         for (int j = 0, k = 0; k < block->col_size; j += 2, k++) {
-          // If the line is 0, fill with NONE
+          // If the value is 0, fill with NONE
           block->values[i][k] = to_digit(line[j]) ? (enum Color) color_index : NONE;
         }
     }
@@ -32,7 +32,7 @@ struct Block *populate_block(char **saved_ptr, int row_size, int col_size, int c
 
 struct Block *read_block(char **saved_ptr, char *line, int color_index)
 {
-    int i, j, k, row_size;
+    int row_size;
 
     if (strlen(line) != 1) {
         fprintf(stderr, "Line %s is malformed", line);
@@ -41,7 +41,7 @@ struct Block *read_block(char **saved_ptr, char *line, int color_index)
 
     row_size = to_digit(line[0]);
 
-    // Blocks should be a square matrix
+    // Blocks should always be a square matrix
     return populate_block(saved_ptr, row_size, row_size, color_index);
 }
 
@@ -49,8 +49,6 @@ struct BlockList *read_from_string(char blocks_string[])
 {
     char *line = NULL;
     char *saved_ptr;
-    size_t len = 0;
-    ssize_t read;
 
     int color_index = 0;
     struct BlockList *block_list = create_list();
