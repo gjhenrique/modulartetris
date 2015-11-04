@@ -46,7 +46,7 @@ public class BoardSwig implements Board {
         if (row >= getBoardWidth())
             throw new IllegalArgumentException(col + " is bigger than the board height: " + getBoardWidth());
 
-        ColorSwigWrap colorSwigWrap = modular_tetris.getColorValue(boardPtr.getVisited(), col, row);
+        ColorSwigWrap colorSwigWrap = modular_tetris.get_color_value(boardPtr.getBoard_values(), col, row);
         return convertColor(colorSwigWrap);
     }
 
@@ -69,7 +69,7 @@ public class BoardSwig implements Board {
         if (row >= getNextBlockWidth())
             throw new IllegalArgumentException(col + " is bigger than the next block height: " + getNextBlockWidth());
 
-        ColorSwigWrap colorSwigWrap = modular_tetris.getColorValue(boardPtr.getNext_block().getValues(), col, row);
+        ColorSwigWrap colorSwigWrap = modular_tetris.get_color_value(boardPtr.getNext_block().getValues(), col, row);
         return convertColor(colorSwigWrap);
     }
 

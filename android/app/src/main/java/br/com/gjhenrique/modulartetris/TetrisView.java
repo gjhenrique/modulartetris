@@ -84,10 +84,9 @@ public class TetrisView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         stopped = false;
 
-        if (this.gameThread.getState() == Thread.State.TERMINATED)
-		{
-			this.gameThread = new Thread(new TetrisGameLoop());
-		}
+        if (this.gameThread.getState() == Thread.State.TERMINATED) {
+            this.gameThread = new Thread(new TetrisGameLoop());
+        }
 
         this.drawBoard();
         this.gameThread.start();
@@ -144,7 +143,7 @@ public class TetrisView extends SurfaceView implements SurfaceHolder.Callback {
 
         @Override
         public void moveBlockLeft() {
-            if(!paused) {
+            if (!paused) {
                 board.moveToLeft();
                 drawBoard();
             }
@@ -152,7 +151,7 @@ public class TetrisView extends SurfaceView implements SurfaceHolder.Callback {
 
         @Override
         public void moveBlockRight() {
-            if(!paused) {
+            if (!paused) {
                 board.moveToRight();
                 drawBoard();
             }
@@ -160,7 +159,7 @@ public class TetrisView extends SurfaceView implements SurfaceHolder.Callback {
 
         @Override
         public void rotateBlock() {
-            if(!paused) {
+            if (!paused) {
                 board.rotateClockwise();
                 drawBoard();
             }
@@ -168,7 +167,7 @@ public class TetrisView extends SurfaceView implements SurfaceHolder.Callback {
 
         @Override
         public void moveToBottom() {
-            if(!paused) {
+            if (!paused) {
                 checkGameOver();
                 board.moveToBottom();
                 drawBoard();

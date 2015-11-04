@@ -19,6 +19,6 @@ struct BlockList *create_list();
 
 void add(struct BlockList *list, struct Block *block);
 
-struct Block *get(struct BlockList *blockList, int index);
+struct Block *get(struct BlockList *list, int index);
 
 #endif /* BLOCK_LIST_H */

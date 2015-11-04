@@ -11,7 +11,7 @@ extern "C"
 #include "board.h"
 #include "boilerplate.h"
 
-enum Color getColorValue(enum Color **color, int col, int row) {
+enum Color get_color_value(enum Color **color, int col, int row) {
     return color[col][row];
 }
 #ifdef __cplusplus
@@ -26,6 +26,6 @@ enum Color getColorValue(enum Color **color, int col, int row) {
 %rename Color ColorSwigWrap;
 #endif
 
-%include "../tetris/model.h"
-%include "../tetris/board.h"
+%include "model.h"
+%include "board.h"
 extern void free_board(struct Board *board);

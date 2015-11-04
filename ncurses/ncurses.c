@@ -12,10 +12,8 @@
 #include "boilerplate.h"
 
 #define STEP 1000
-#define BOARD_TOP      ((LINES-BOARD_HEIGHT)/2)
-#define BOARD_LEFT     ((COLS-BOARD_WIDTH)/2)
-#define BOARD_WIDTH 10
-#define BOARD_HEIGHT 15
+#define BOARD_TOP(board) ((LINES-board->height)/2)
+#define BOARD_LEFT(board) ((COLS-board->width)/2)
 #define HOLD_HEIGHT  4
 #define HOLD_WIDTH   6
 
@@ -59,13 +57,13 @@ void init_ncurses()
     }
 }
 
-struct NcursesGame *init_game()
+struct NcursesGame *init_game(int width, int height, char *file_name)
 {
     struct NcursesGame *game = malloc(sizeof(struct NcursesGame));
-    struct Board *board = create_board_file(BOARD_WIDTH, BOARD_HEIGHT, "default_blocks");
+    struct Board *board = create_board_file(width, height, file_name);
 
-    game->board_window = newwin(board->height + 2, board->width + 2, BOARD_TOP, BOARD_LEFT);
-    game->next_block_window = newwin(HOLD_HEIGHT + 2, HOLD_WIDTH + 2, BOARD_TOP, BOARD_LEFT + BOARD_WIDTH + 2);
+    game->board_window = newwin(board->height + 2, board->width + 2, BOARD_TOP(board), BOARD_LEFT(board));
+    game->next_block_window = newwin(HOLD_HEIGHT + 2, HOLD_WIDTH + 2, BOARD_TOP(board), BOARD_LEFT(board) + board->width + 2);
     game->board_panel = new_panel(game->board_window);
     game->next_block_panel = new_panel(game->next_block_window);
 
@@ -89,9 +87,9 @@ void draw_board(struct NcursesGame *game)
     {
         for(int j = 0; j < game->board->width; j++)
         {
-            if (game->board->visited[i][j] > 0)
+            if (game->board->board_values[i][j] > 0)
             {
-                int ch = ' ' | COLOR_PAIR(game->board->visited[i][j]);
+                int ch = ' ' | COLOR_PAIR(game->board->board_values[i][j]);
                 mvwaddch(game->board_window, i + 1, j + 1, ch);
             }
         }
@@ -140,19 +138,32 @@ bool route(struct NcursesGame *game, int ch)
 
 int main(int argc, char *argv[])
 {
+    int width = 10;
+    int height = 15;
+    char *file_name = "default_blocks";
+
+    if (argc >= 2)
+    {
+        file_name = argv[1];
+    }
+
+    if (argc == 4)
+    {
+        width = atoi(argv[2]);
+        height = atoi(argv[3]);
+    }
+
     init_ncurses();
-    struct NcursesGame *game = init_game();
+    struct NcursesGame *game = init_game(width, height, file_name);
 
     struct timeval prev, now;
     int diff;
     gettimeofday(&prev, NULL);
 
-    // Game loop "stolen" from https://github.com/theabraham/terminal-tetris
     while (route(game, getch())) {
 
       gettimeofday(&now, NULL);
       diff = ((now.tv_sec-prev.tv_sec)*1000)+((now.tv_usec-prev.tv_usec)/1000);
-      //if (diff >= game->step && (!game.ended && !game.paused)) {
       if (diff >= STEP)
       {
           next_move(game->board);
@@ -161,7 +172,6 @@ int main(int argc, char *argv[])
 
       draw_board(game);
 
-      // reflect changes in our panels onscreen
       update_panels();
       doupdate();
     }

@@ -1,10 +1,10 @@
 package br.com.gjhenrique.modulartetris;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-
 
 public abstract class TetrisGestureListener implements View.OnTouchListener {
 
@@ -43,6 +43,7 @@ public abstract class TetrisGestureListener implements View.OnTouchListener {
     private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         private float initialX;
+        private float initialY;
         private final int MAX_VELOCITY = 1000;
 
         @Override
@@ -54,17 +55,23 @@ public abstract class TetrisGestureListener implements View.OnTouchListener {
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 
             if (!isSrolling) {
+                initialY = e1.getY();
                 initialX = e1.getX();
                 isSrolling = true;
             }
 
-            float d = Math.abs(e2.getX() - initialX);
+            float scrollDistanceX = Math.abs(e2.getX() - initialX);
+            float scrollDistanceY = Math.abs(e2.getY() - initialY);
 
-            if (d > tetrisPanel.getBlockWidth()) {
+            if (scrollDistanceY > 2 * tetrisPanel.getBlockHeight()) {
+                return false;
+            }
 
-                int times = (int) (d / tetrisPanel.getBlockWidth());
+            if (scrollDistanceX > tetrisPanel.getBlockWidth()) {
+                Log.e(TAG, distanceY+"");
+                int times = (int) (scrollDistanceX / tetrisPanel.getBlockWidth());
 
-                for (int i = 0; i <  times; i++) {
+                for (int i = 0; i < times; i++) {
                     if (e2.getX() < initialX)
                         moveBlockLeft();
                     else
@@ -88,9 +95,6 @@ public abstract class TetrisGestureListener implements View.OnTouchListener {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-
-            float x = e.getX();
-            float y = e.getY();
 
             if (tetrisPanel.getButtonRange().contains(e.getX(), e.getY()))
                 pauseGame();

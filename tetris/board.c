@@ -20,14 +20,14 @@ for (int i = y, k = board->current_block->row_size - 1; i > y - board->current_b
 
 void set_default_values(struct Board *board)
 {
-    board->next_block = get_random_block(board->default_blocks);
+    board->next_block = get_random_block(board->block_list);
 
     board->current_block_x = (board->width / 2) - (board->current_block->col_size / 2);
 
     board->current_block_y = -1;
 }
 
-struct Board *create_board(int width, int height, struct BlockList *blockList)
+struct Board *create_board(int width, int height, struct BlockList *list)
 {
     srand(time(NULL));
 
@@ -36,18 +36,35 @@ struct Board *create_board(int width, int height, struct BlockList *blockList)
     board->width = width;
     board->height = height;
 
-    board->default_blocks = blockList;
+    board->block_list = list;
 
-    if(board->default_blocks->elements_number == 0)
+    if(board->block_list->elements_number == 0)
     {
         fprintf(stderr, "Number of tetrominos is empty");
-        exit(0);
+        exit(-1);
     }
 
-    board->current_block = get_random_block(board->default_blocks);
+    for (int i = 0; i < list->elements_number; i++)
+    {
+        struct Block *block = get(list, i);
+
+        if(block->col_size > board->width)
+        {
+            fprintf(stderr, "Não pode");
+            exit(-1);
+        }
+
+        if(block->row_size > board->height)
+        {
+            fprintf(stderr, "Não pode tameim");
+            exit(-1);
+        }
+    }
+
+    board->current_block = get_random_block(board->block_list);
     set_default_values(board);
 
-    board->visited = malloc_collor_matrix(width, height);
+    board->board_values = malloc_collor_matrix(width, height);
     board->is_game_over = false;
 
     return board;
@@ -76,9 +93,9 @@ void replace_lines(struct Board *board, int row)
     {
         for (int j = row - 1; j >= 0; j--)
         {
-            enum Color tmp = board->visited[j][i];
-            board->visited[j][i] = NONE;
-            board->visited[j+1][i] = tmp;
+            enum Color tmp = board->board_values[j][i];
+            board->board_values[j][i] = NONE;
+            board->board_values[j+1][i] = tmp;
         }
     }
 }
@@ -87,7 +104,7 @@ bool is_empty_line(struct Board *board, int line)
 {
     for (int i = 0; i < board->width; i++)
     {
-        if (is_empty_space(board->visited[line][i]))
+        if (is_empty_space(board->board_values[line][i]))
         {
             return true;
         }
@@ -120,7 +137,7 @@ void erase_current_block(struct Board *board, int index)
         if (i < board->height && i >= 0)
         {
             if(board->current_block->values[k][m])
-                board->visited[i][j] = NONE;
+                board->board_values[i][j] = NONE;
         }
     END_CURRENT_BOARD_LOOP
 }
@@ -133,7 +150,7 @@ void insert_current_block(struct Board *board, int index, enum Color color)
         {
             if(board->current_block->values[k][m])
             {
-                board->visited[i][j] = color;
+                board->board_values[i][j] = color;
             }
         }
     END_CURRENT_BOARD_LOOP
@@ -154,7 +171,7 @@ bool block_fits(struct Board *board, int new_x, int new_y)
 
         if (i < board->height && i >= 0)
         {
-            if (!is_empty_space(board->visited[i][j]) && board->current_block->values[k][m] != NONE)
+            if (!is_empty_space(board->board_values[i][j]) && board->current_block->values[k][m] != NONE)
             {
                 return false;
             }

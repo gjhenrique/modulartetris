@@ -56,7 +56,7 @@ public class TetrisPanel {
         float playButtonWidth = paddingX + paddingX + tetrisBoardWidth;
         float playButtonHeigt = paddingY + this.nextBlockHeight + paddingY;
         this.buttonRange = new RectF(playButtonWidth, playButtonHeigt,
-                playButtonWidth + ((float)screenWidth *0.15f), playButtonHeigt + ((float)screenWidth *0.15f));
+                playButtonWidth + ((float) screenWidth * 0.15f), playButtonHeigt + ((float) screenWidth * 0.15f));
 
         this.playBitmap = BitmapFactory.decodeResource(activity.getResources(), android.R.drawable.ic_media_play);
         this.pauseBitmap = BitmapFactory.decodeResource(activity.getResources(), android.R.drawable.ic_media_pause);
@@ -128,7 +128,7 @@ public class TetrisPanel {
         paint.setColor(android.graphics.Color.GRAY);
         paint.setAntiAlias(true);
 
-        if(isPaused)
+        if (isPaused)
             canvas.drawBitmap(playBitmap, null, this.buttonRange, paint);
         else
             canvas.drawBitmap(pauseBitmap, null, this.buttonRange, paint);
@@ -140,6 +140,10 @@ public class TetrisPanel {
 
     public float getBlockWidth() {
         return blockWidth;
+    }
+
+    public float getBlockHeight() {
+        return blockHeight;
     }
 
     public void setPaused(boolean paused) {

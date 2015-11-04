@@ -31,9 +31,9 @@ struct Board
 
     struct Block *next_block;
 
-    struct BlockList *default_blocks;
+    struct BlockList *block_list;
 
-    enum Color **visited;
+    enum Color **board_values;
 
     bool is_game_over;
 };

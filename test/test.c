@@ -31,7 +31,7 @@ int check_board_equals(struct Board *board, bool tested_board[board->width][boar
     {
         for(int j = 0; j < board->height; j++)
         {
-          if((bool) board->visited[i][j] != tested_board[i][j])
+          if((bool) board->board_values[i][j] != tested_board[i][j])
               return false;
         }
     }
@@ -310,15 +310,15 @@ TEST test_fit_blocks(void)
     char blocks[] = "3\n0 0 0\n0 0 1\n1 1 1\n2\n0 1 \n0 1\n2\n1 1\n0 0";
     struct Board *board = create_board_string(4, 4, blocks);
 
-    board->current_block = clone_block(get(board->default_blocks,0));
+    board->current_block = clone_block(get(board->block_list,0));
     move_to_left(board);
     move_to_bottom(board);
-    board->current_block = clone_block(get(board->default_blocks,1));
+    board->current_block = clone_block(get(board->block_list,1));
     move_to_right(board);
     move_to_bottom(board);
     ASSERT(check_board_equals(board, board1));
 
-    board->current_block = clone_block(get(board->default_blocks,2));
+    board->current_block = clone_block(get(board->block_list,2));
     move_to_left(board);
     move_to_bottom(board);
     ASSERT(check_board_equals(board, board2));

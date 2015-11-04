@@ -31,7 +31,7 @@ void print_board(struct Board *board)
     {
         for (int j = 0; j < board->width; j++)
         {
-            printf("%d", board->visited[i][j]);
+            printf("%d", board->board_values[i][j]);
             printf ("\t");
         }
         printf("\n");
@@ -62,7 +62,7 @@ void free_block(struct Block *block)
 
 void free_board(struct Board *board)
 {
-    free_list(board->default_blocks);
+    free_list(board->block_list);
 
     if(board->current_block)
         free_block(board->current_block);
@@ -72,10 +72,10 @@ void free_board(struct Board *board)
 
     for (int i = 0; i < board->height; i++)
     {
-        free(board->visited[i]);
+        free(board->board_values[i]);
     }
 
-    free(board->visited);
+    free(board->board_values);
 
     free(board);
 }
