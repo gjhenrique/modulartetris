@@ -1,0 +1,105 @@
+#+TITLE: A modular tetris game library
+
+Modulartetris is a C library of a flexible and modular tetris game.
+All the logic (board, blocks, collision, game over) is contained inside this library,
+so you only have to worry about the input control and drawing logic of your platform.
+
+Because of [[http://www.swig.org/][swig]] support, you can also bind this library to many programming languages.
+
+* Custom Blocks Format
+Bored of the same and old tetrominoes?
+This library gives a way to customize the blocks provided by an external file.
+
+For example, including this file:
+#+BEGIN_SRC
+# All the blocks should be a square matrix
+3
+1 1 1
+1 0 1
+1 1 1
+
+3
+1 0 1
+0 0 0
+0 1 0
+#+END_SRC
+
+You will have this game:
+
+[[file:img/demo-game.png]]
+
+* How to use it
+
+After connecting the library with your programming language, you can call the following functions:
+
+#+BEGIN_SRC c
+// You can pass a file or a string with your custom blocks
+struct Board *board = create_board_file(char *file_name, int width, int height);
+struct Board *board = create_board_string(char *blocks_string, int width, int height);
+
+// Move down the current block a single unit
+next_move(board);
+
+ //Moves the current block to the right or the left
+move_left(board);
+move_right(board);
+
+ // Push the current block to the bottom
+move_to_bottom(board);
+
+ //Current block rotation
+rotate_clockwise(board);
+rotate_anticlockwise(board);
+
+// Pseudocode to draw on the screen
+for (height in board.height)
+    for(width in board.width)
+        color = board.board_values[i][j]
+        draw_board(height, width, color)
+#+END_SRC
+
+* Tests
+#+BEGIN_SRC
+make run_tests
+./run_tests
+#+END_SRC
+
+* Ncurses
+
+[[file:img/ncurses.png]]
+
+Game graphics and input from[[https://github.com/theabraham/terminal-tetris][ terminal-tetris]]. Only changed the game logic.
+#+BEGIN_SRC
+make ncurses_games
+# default_blocks is the file containing the default tetrominoes, 13 is the width and 20 is the height
+./ncurses_game default_blocks 13 20
+#+END_SRC
+* Android
+
+[[file:img/android.png]]
+
+#+BEGIN_SRC
+make android_swig
+Download NDK r10e to use the Gradle Experimental Plugin
+Import android folder and include the NDK into Android Studio
+Run app
+#+END_SRC
+
+* Python
+
+[[file:img/python.png]]
+
+#+BEGIN_SRC
+# Had problems installing pygame with pip from pyenv. Had to use system python
+sudo pip install hg+http://bitbucket.org/pygame/pygame
+make python_swig
+/usr/bin/python3 python/tetris_game.py
+#+END_SRC
+
+* Javascript
+#+BEGIN_SRC
+# Only javascript binding included
+make javascript_swig
+pushd javascript; node-gyp rebuild; popd;
+node javascript/tetris_game.js
+#+END_SRC
