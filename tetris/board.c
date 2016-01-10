@@ -31,7 +31,7 @@ struct Board *create_board(int width, int height, struct BlockList *list)
 {
     srand(time(NULL));
 
-    struct Board *board = malloc(sizeof(struct Board));
+    struct Board *board = (struct Board *) malloc(sizeof(struct Board));
 
     board->width = width;
     board->height = height;
@@ -50,13 +50,13 @@ struct Board *create_board(int width, int height, struct BlockList *list)
 
         if(block->col_size > board->width)
         {
-            fprintf(stderr, "Não pode");
+            fprintf(stderr, "Blocks are not supposed to be wider than the width of the board");
             exit(-1);
         }
 
         if(block->row_size > board->height)
         {
-            fprintf(stderr, "Não pode tameim");
+            fprintf(stderr, "Blocks are not supposed to be taller than the height of the board");
             exit(-1);
         }
     }

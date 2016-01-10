@@ -5,7 +5,7 @@
 
 struct BlockList *create_list()
 {
-    struct BlockList *block_list = malloc(sizeof(struct BlockList));
+    struct BlockList *block_list = (struct BlockList *) malloc(sizeof(struct BlockList));
 
     block_list->HEAD = NULL;
     block_list->elements_number = 0;
@@ -15,7 +15,7 @@ struct BlockList *create_list()
 
 void add(struct BlockList *list, struct Block *block)
 {
-    struct BlockNode *block_node = malloc(sizeof(struct BlockNode));
+    struct BlockNode *block_node = (struct BlockNode *) malloc(sizeof(struct BlockNode));
     block_node->block = block;
     block_node->next = NULL;
 

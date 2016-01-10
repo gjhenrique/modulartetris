@@ -41,7 +41,7 @@ void print_board(struct Board *board)
 
 struct Block *create_block(int row_size, int col_size) {
 
-    struct Block* block = malloc(sizeof(struct Block));
+    struct Block* block =  (struct Block *)malloc(sizeof(struct Block));
 
     block->col_size = col_size;
     block->row_size = row_size;
@@ -113,11 +113,11 @@ struct Block *clone_block(struct Block *block)
 
 enum Color **malloc_collor_matrix(int width, int height)
 {
-    enum Color **colors = malloc(height * sizeof(enum Color *));
+    enum Color **colors = (enum Color **) calloc(height, sizeof(enum Color *));
 
     for (int i = 0; i < height; i++)
     {
-        colors[i] = malloc(width * sizeof(enum Color));
+        colors[i] = (enum Color *) calloc(width, sizeof(enum Color));
     }
 
     for (int i = 0; i < height; ++i)

@@ -16,7 +16,7 @@ NCURSES_SRC=ncurses/ncurses.c
 # Include your Python 3 Python.h location here
 PYTHON_INCLUDE=/usr/include/python3.5m
 
-all: $(TETRIS_LIB_NAME) tetris_c test android_swig python_swig
+all: $(TETRIS_LIB_NAME) ncurses_game test android_swig python_swig
 
 build_lib $(TETRIS_LIB_NAME): $(TETRIS_SRC)
 	$(CC) $(LDFLAGS) $(LIBFLAGS) -o $(TETRIS_LIB_NAME) $(TETRIS_SRC) $(CFLAGS)
@@ -41,7 +41,7 @@ javascript_swig: $(TETRIS_LIB_NAME)
 	swig -javascript -node -c++ -DV8_VERSION=$(shell node -e 'console.log(process.versions.v8)' | sed 's/\.//g' | sed 's/^/0x/') -o javascript/modulartetris_wrap.cpp tetris/modular_tetris.i
 
 clean:
-	rm -f $(TETRIS_LIB_NAME) run_test tetris_c
+	rm -f $(TETRIS_LIB_NAME) run_test ncurses_game
 
 .PHONY:
 	build_lib android_swig python_swig javascript_swig
