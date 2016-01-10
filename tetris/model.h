@@ -10,10 +10,10 @@ enum Color
 
 struct Block
 {
-    enum Color **values;
     int col_size;
     int row_size;
     enum Color color;
+    enum Color **values;
 };
 
 struct Board
