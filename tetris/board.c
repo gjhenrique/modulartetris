@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <math.h>
 
 #include "board.h"
 #include "block_list.h"
@@ -67,6 +68,9 @@ struct Board *create_board(int width, int height, struct BlockList *list)
     board->board_values = malloc_collor_matrix(width, height);
     board->is_game_over = false;
 
+    board->score = 0;
+    board->rows = 0;
+
     return board;
 }
 
@@ -114,12 +118,20 @@ bool is_empty_line(struct Board *board, int line)
 
 void check_lines(struct Board *board)
 {
+    int rows = 0;
     for (int i = 0; i < board->height; i++)
     {
         if (!is_empty_line(board, i))
         {
             replace_lines(board, i);
+            rows++;
         }
+    }
+    // Inspired in javascript-tetris
+    if (rows != 0)
+    {
+        board->rows += rows;
+        board->score += 100 * pow(2, rows - 1);
     }
 }
 
@@ -289,6 +301,7 @@ bool next_move(struct Board *board)
 
     if(!fits)
     {
+        board->score += 10;
         insert_current_block(board, board->current_block_y, board->current_block->color);
         prepare_next_block(board);
         board->ghost_block_y = board->current_block_y;
@@ -301,7 +314,6 @@ bool next_move(struct Board *board)
     board->ghost_block_y = get_ghost_position(board, board->current_block_y);
     insert_current_block(board, board->ghost_block_y, GHOST);
     insert_current_block(board, new_y, board->current_block->color);
-
 
     return true;
 }

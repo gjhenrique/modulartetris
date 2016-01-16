@@ -36,6 +36,9 @@ struct Board
     enum Color **board_values;
 
     bool is_game_over;
+
+    int score;
+    int rows;
 };
 
 
