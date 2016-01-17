@@ -68,7 +68,6 @@ public abstract class TetrisGestureListener implements View.OnTouchListener {
             }
 
             if (scrollDistanceX > tetrisPanel.getBlockWidth()) {
-                Log.e(TAG, distanceY+"");
                 int times = (int) (scrollDistanceX / tetrisPanel.getBlockWidth());
 
                 for (int i = 0; i < times; i++) {
@@ -96,7 +95,7 @@ public abstract class TetrisGestureListener implements View.OnTouchListener {
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
 
-            if (tetrisPanel.getButtonRange().contains(e.getX(), e.getY()))
+            if (tetrisPanel.getPlayPauseBox().contains(e.getX(), e.getY()))
                 pauseGame();
             else
                 rotateBlock();

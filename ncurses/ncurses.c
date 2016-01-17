@@ -16,14 +16,18 @@
 #define BOARD_LEFT(board) ((COLS-board->width)/2)
 #define HOLD_HEIGHT  4
 #define HOLD_WIDTH   6
+#define SIDE_HEIGHT  17
+#define SIDE_WIDTH   25
+#define PAD          2
 
 struct NcursesGame
 {
     WINDOW *board_window;
     WINDOW *next_block_window;
+    WINDOW *side_window;
     PANEL *board_panel;
     PANEL *next_block_panel;
-
+    PANEL *side_panel;
     struct Board *board;
 };
 
@@ -64,8 +68,11 @@ struct NcursesGame *init_game(int width, int height, char *file_name)
 
     game->board_window = newwin(board->height + 2, board->width + 2, BOARD_TOP(board), BOARD_LEFT(board));
     game->next_block_window = newwin(HOLD_HEIGHT + 2, HOLD_WIDTH + 2, BOARD_TOP(board), BOARD_LEFT(board) + board->width + 2);
+    game->side_window = newwin(SIDE_HEIGHT+PAD, SIDE_WIDTH+PAD, BOARD_TOP(board)+HOLD_HEIGHT+2, BOARD_LEFT(board)+board->width+3);
+
     game->board_panel = new_panel(game->board_window);
     game->next_block_panel = new_panel(game->next_block_window);
+    game->side_panel = new_panel(game->side_window);
 
     game->board = board;
 
@@ -104,6 +111,17 @@ void draw_board(struct NcursesGame *game)
           mvwaddch(game->next_block_window, i + 1, j + 2, ch);
       }
     }
+}
+
+void draw_side(struct NcursesGame *game)
+{
+    wclear(game->side_window);
+    wattrset(game->side_window, A_BOLD);
+    mvwprintw(game->side_window, 0, 0, "Score:");
+    wattrset(game->side_window, A_NORMAL);
+    mvwprintw(game->side_window, 1, 0, "%i", game->board->score);
+    mvwprintw(game->side_window, 2, 0, "Rows:");
+    mvwprintw(game->side_window, 3, 0, "%i", game->board->rows);
 }
 
 void free_game(struct NcursesGame *game)
@@ -171,6 +189,7 @@ int main(int argc, char *argv[])
       }
 
       draw_board(game);
+      draw_side(game);
 
       update_panels();
       doupdate();

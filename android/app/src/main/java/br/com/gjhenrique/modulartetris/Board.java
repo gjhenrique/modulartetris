@@ -27,4 +27,5 @@ public interface Board {
 
     public int getNextBlockWidth();
 
+    public int getScore();
 }

@@ -50,7 +50,6 @@ public class BoardSwig implements Board {
         return convertColor(colorSwigWrap);
     }
 
-
     @Override
     public int getBoardHeight() {
         return boardPtr.getHeight();
@@ -81,6 +80,11 @@ public class BoardSwig implements Board {
     @Override
     public int getNextBlockWidth() {
         return boardPtr.getNext_block().getRow_size();
+    }
+
+    @Override
+    public int getScore() {
+        return boardPtr.getScore();
     }
 
     public Color convertColor(ColorSwigWrap colorSwigWrap) {
