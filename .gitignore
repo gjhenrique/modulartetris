@@ -49,3 +49,13 @@ cscope*
 # Android Stduio
 .idea
 *.iml
+
+# Output generated object files
+javascript/tetris-library.js
+javascript/tetris-library.js.mem
+node/modulartetris_wrap.cpp
+node/build
+python/modular_tetris.py
+python/modulartetris_wrap.c
+python/__pycache__
+ncurses_game
