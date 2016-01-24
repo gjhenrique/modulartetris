@@ -87,7 +87,7 @@ function Board(width, height, type) {
 Board.prototype.buildMatrix = function(ptr, col, row) {
   var arr = new Array(row);
   for (var i = 0; i < row; i++) {
-    rowPtr = Module.getValue(ptr + i * 4, 'i32');
+    var rowPtr = Module.getValue(ptr + i * 4, 'i32');
     arr[i] = new Array(col);
     for (var j = 0; j < col; j++) {
       arr[i][j] = Module.getValue(rowPtr + j * 4, 'i32');
@@ -95,12 +95,3 @@ Board.prototype.buildMatrix = function(ptr, col, row) {
   }
   return arr;
 };
-
-Board.BOARD_NORMAL = '' +
-  '4\n0 0 0 0\n1 1 1 1\n0 0 0 0\n0 0 0 0\n\n' +
-  '2\n1 1\n1 1\n\n' +
-  '3\n1 1 1\n0 1 0\n0 0 0\n' +
-  '3\n1 1 0\n0 1 1\n0 0 0\n' +
-  '3\n0 1 1\n1 1 0\n0 0 0\n' +
-  '3\n1 1 1\n0 0 1\n0 0 0\n' +
-  '3\n1 1 1\n1 0 0\n0 0 0';

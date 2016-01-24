@@ -44,8 +44,8 @@ node_swig: $(TETRIS_LIB_NAME)
 
 # To install emscripten in your machine:
 # https://kripken.github.io/emscripten-site/docs/getting_started/downloads.html
-asmjs_generate: $(ASMJS_SRC) $(TETRIS_SRC)
-	emcc $(TETRIS_SRC) -s EXPORTED_FUNCTIONS="['_create_board_string', '_next_move', '_move_to_bottom', '_move_to_left', '_move_to_right', '_rotate_clockwise', '_free_board']" --post-js $(ASMJS_SRC) -o javascript/tetris-library.js
+javascript_asmjs: $(ASMJS_SRC) $(TETRIS_SRC)
+	emcc $(TETRIS_SRC) -O2 -s NO_EXIT_RUNTIME=1 --emit-symbol-map -s EXPORTED_FUNCTIONS="['_create_board_string', '_next_move', '_move_to_bottom', '_move_to_left', '_move_to_right', '_rotate_clockwise', '_free_board']" --post-js $(ASMJS_SRC) -o javascript/tetris-library.js
 
 clean:
 	rm -f $(TETRIS_LIB_NAME) run_test ncurses_game

@@ -43,6 +43,21 @@ if (!window.requestAnimationFrame) { // http://paulirish.com/2011/requestanimati
 //-------------------------------------------------------------------------
 // game constants
 //-------------------------------------------------------------------------
+var BOARD_NORMAL = '' +
+    '4\n0 0 0 0\n1 1 1 1\n0 0 0 0\n0 0 0 0\n' +
+    '2\n1 1\n1 1\n' +
+    '3\n1 1 1\n0 1 0\n0 0 0\n' +
+    '3\n1 1 0\n0 1 1\n0 0 0\n' +
+    '3\n0 1 1\n1 1 0\n0 0 0\n' +
+    '3\n1 1 1\n0 0 1\n0 0 0\n' +
+    '3\n1 1 1\n1 0 0\n0 0 0';
+
+var BOARD_EASY = '4\n0 0 0 0\n1 1 1 1\n0 0 0 0\n0 0 0 0';
+
+var BOARD_WEIRD = '' +
+      '3\n0 0 1\n1 0 0\n0 1 0\n' +
+      '3\n1 0 1\n1 0 1\n1 1 1\n' +
+      '2\n1 0\n0 1';
 
 var KEY = {
     ESC: 27,
@@ -60,7 +75,6 @@ var KEY = {
     MIN: 0,
     MAX: 3
   },
-  stats = new Stats(),
   canvas = get('canvas'),
   ctx = canvas.getContext('2d'),
   ucanvas = get('upcoming'),
@@ -73,7 +87,9 @@ var KEY = {
   nx = 10, // width of tetris court (in blocks)
   ny = 20, // height of tetris court (in blocks)
   nu = 5,
-  board = new Board(nx, ny, Board.BOARD_NORMAL); // width/height of upcoming preview (in blocks)
+  board = undefined,
+  currentFormat = BOARD_NORMAL;
+
 
 //-------------------------------------------------------------------------
 // game variables (initialized during reset)
@@ -86,8 +102,11 @@ var dx, dy, // pixel size of a single tetris block
   vscore, // the currently displayed score (it catches up to score in small chunks - like a spinning slot machine)
   step; // how long before current piece drops by 1 row
 
+function showFormat(format) {
+  html('format', format.replace(/\n/g, "<br/>"));
+}
+
 function run() {
-  showStats(); // initialize FPS counter
   addEvents(); // attach keydown and resize events
 
   var last = now = timestamp();
@@ -96,20 +115,13 @@ function run() {
     now = timestamp();
     update(Math.min(1, (now - last) / 1000.0)); // using requestAnimationFrame have to be able to handle large delta's caused when it 'hibernates' in a background or non-visible tab
     draw();
-    stats.update();
     last = now;
     requestAnimationFrame(frame, canvas);
   }
 
   resize(); // setup all our sizing information
-  reset(); // reset the per-game variables
+  reset(currentFormat); // reset the per-game variables
   frame(); // start the first frame
-
-}
-
-function showStats() {
-  stats.domElement.id = 'stats';
-  get('menu').appendChild(stats.domElement);
 }
 
 function addEvents() {
@@ -124,8 +136,19 @@ function resize(event) {
   ucanvas.height = ucanvas.clientHeight;
   dx = canvas.width / nx; // pixel size of a single tetris block
   dy = canvas.height / ny; // (ditto)
-  invalidate();
+  if(board !== undefined) {
+    invalidate();
+  }
   invalidateNext();
+}
+
+function play() {
+  hide('start');
+  if (board !== undefined) {
+    board.free();
+  }
+  reset(currentFormat);
+  playing = true;
 }
 
 function keydown(ev) {
@@ -174,14 +197,6 @@ function clearActions() {
   actions = [];
 }
 
-function play() {
-  hide('start');
-  console.log('freeing');
-  board.free();
-  reset();
-  playing = true;
-}
-
 function lose() {
   show('start');
   setVisualScore();
@@ -193,12 +208,42 @@ function setVisualScore(n) {
   invalidateScore();
 }
 
-function reset() {
-  board = new Board(nx, ny, Board.BOARD_NORMAL); // width/height of upcoming preview (in blocks)
+function reset(format) {
+  board = new Board(nx, ny, format); // width/height of upcoming preview (in blocks)
+  currentFormat = format;
   dt = 0;
   clearActions();
   clearRows(0);
   setVisualScore(0);
+  showFormat(format);
+  underscoreLink(format);
+  invalidateNext();
+  drawNext();
+}
+
+function underscoreLink(format) {
+  if (format === BOARD_NORMAL) {
+    addUnderscoreClass('Normal');
+  }
+  else if(format === BOARD_EASY) {
+    addUnderscoreClass('Easy');
+  }
+  else if (format === BOARD_WEIRD) {
+    addUnderscoreClass('Weird');
+  }
+}
+
+function addUnderscoreClass(formatName) {
+  var links = document.getElementsByTagName('a');
+  for(var i = 0; i < links.length; i++) {
+    var elem = links[i];
+    if (elem.text === formatName) {
+      elem.classList.add('underscore');
+    }
+    else if(elem.classList.contains('underscore') !== -1) {
+      elem.classList.remove('underscore');
+    }
+  }
 }
 
 function update(idt) {
@@ -327,6 +372,7 @@ function drawBlock(ctx, x, y, color) {
   ctx.strokeRect(x * dx, y * dy, dx, dy);
 }
 
+
 //-------------------------------------------------------------------------
 // FINALLY, lets run the game
-run();
+Module['_main'] = run;
