@@ -6,6 +6,9 @@ so you only have to worry about the input control and drawing logic of your plat
 
 Because of [[http://www.swig.org/][swig]] support, you can also bind this library to many programming languages.
 
+To run in the browser, the library is compiled from C to [[http://asmjs.org/faq.html][asm.js]] format using [[https://kripken.github.io/emscripten-site/][emscripten]].
+The visual game was +stolen+ based on [[https://github.com/jakesgordon/javascript-tetris][javascript-tetris]]. Check the final [[https://gjhenrique.github.io/modulartetris/][result.]]
+
 * Custom Blocks Format
 Bored of the same and old tetrominoes?
 This library gives a way to customize the blocks provided by an external file.
@@ -96,10 +99,17 @@ make python_swig
 /usr/bin/python3 python/tetris_game.py
 #+END_SRC
 
-* Javascript
+* Node
 #+BEGIN_SRC
 # Only javascript binding included
-make javascript_swig
-pushd javascript; node-gyp rebuild; popd;
-node javascript/tetris_game.js
+make node_swig
+pushd node; node-gyp rebuild; popd;
+node node/tetris_game.js
+#+END_SRC
+* Javascript (asm.js)
+#+BEGIN_SRC
+# First you have to put [[https://kripken.github.io/emscripten-site/docs/getting_started/downloads.html][emcc]] in your path
+make javascript_asmjs
+# Open the game in your preferred browser
+xdg-open javascript/index.html
 #+END_SRC
