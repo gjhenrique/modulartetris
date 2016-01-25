@@ -106,7 +106,7 @@ function showFormat(format) {
   html('format', format.replace(/\n/g, "<br/>"));
 }
 
-function run() {
+function runGame() {
   addEvents(); // attach keydown and resize events
 
   var last = now = timestamp();
@@ -375,4 +375,4 @@ function drawBlock(ctx, x, y, color) {
 
 //-------------------------------------------------------------------------
 // FINALLY, lets run the game
-Module['_main'] = run;
+Module['_main'] = runGame;
