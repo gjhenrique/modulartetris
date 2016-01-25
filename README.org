@@ -107,8 +107,10 @@ pushd node; node-gyp rebuild; popd;
 node node/tetris_game.js
 #+END_SRC
 * Javascript (asm.js)
+First of all, you have to install [[https://kripken.github.io/emscripten-site/docs/getting_started/downloads.html][emscripten]]
 #+BEGIN_SRC
-# First you have to put [[https://kripken.github.io/emscripten-site/docs/getting_started/downloads.html][emcc]] in your path
+# Put emcc in your path
+source <emsdk>/emsdk_env.sh
 make javascript_asmjs
 # Open the game in your preferred browser
 xdg-open javascript/index.html
